@@ -1,0 +1,74 @@
+<!DOCTYPE html><html lang="en"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content=""><title>Transactions in Spring | VanderChen's Dev Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><meta name="generator" content="Hexo 4.2.1"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Transactions in Spring</h1><a id="logo" href="/.">VanderChen's Dev Blog</a><p class="description">Record Dev Solutions</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Transactions in Spring</h1><div class="post-meta">May 6, 2021</div><div class="post-content"><h2 id="Basic-concepts"><a href="#Basic-concepts" class="headerlink" title="Basic concepts"></a>Basic concepts</h2><ul>
+<li><strong>Atomicity</strong> It says that transaction is atomic in nature <em>i.e.</em> it is either full or it isn’t.</li>
+<li><strong>Consistency</strong> It says that after the end of the transaction the system should be in a be a valid state.</li>
+<li><strong>Isolation</strong> It says that all the transactions of the system should be done in isolation.</li>
+<li><strong>Durability</strong> It says that a transaction should be durable when all the changes made to the system are permanent.</li>
+</ul>
+<h2 id="Spring-Isolation-Level"><a href="#Spring-Isolation-Level" class="headerlink" title="Spring Isolation Level"></a>Spring Isolation Level</h2><ul>
+<li><p><a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/transaction/TransactionDefinition.html#ISOLATION_DEFAULT" target="_blank" rel="noopener">ISOLATION_DEFAULT</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (isolationLevel != ISOLATION_DEFAULT) &#123;</span><br><span class="line">    <span class="keyword">if</span> (currentTransactionIsolationLevel() != isolationLevel) &#123;</span><br><span class="line">        <span class="keyword">throw</span> IllegalTransactionStateException</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/transaction/TransactionDefinition.html#ISOLATION_READ_COMMITTED" target="_blank" rel="noopener">ISOLATION_READ_UNCOMMITTED</a> 一个事务要等另一个事务提交后才能读取数据，解决脏读问题。会出现不可重复读、幻读问题（锁定正在读取的行，适用于大多数系统，Oracle默认级别）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Transactional</span>(isolation = Isolation.READ_COMMITTED)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">log</span><span class="params">(String message)</span></span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/transaction/TransactionDefinition.html#ISOLATION_READ_UNCOMMITTED" target="_blank" rel="noopener">ISOLATION_READ_COMMITTED</a> 一个事务可以读取另一个未提交事务的数据。会出现脏读、不可重复读、幻读（隔离级别最低，但并发性高）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Transactional</span>(isolation = Isolation.READ_UNCOMMITTED)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">log</span><span class="params">(String message)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/transaction/TransactionDefinition.html#ISOLATION_REPEATABLE_READ" target="_blank" rel="noopener">ISOLATION_REPEATABLE_READ</a> 在开始读取数据（事务开启）时，不再允许修改操作，解决不可重复读问题。会出现幻读问题（锁定所读的所有行，MYSQL默认级别）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Transactional</span>(isolation = Isolation.REPEATABLE_READ) </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">log</span><span class="params">(String message)</span></span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/transaction/TransactionDefinition.html#ISOLATION_SERIALIZABLE" target="_blank" rel="noopener">ISOLATION_SERIALIZABLE</a> 最高的事务隔离级别，在该级别下，事务串行化顺序执行，可以避免脏读、不可重复读与幻读。但是这种事务隔离级别效率低下，比较耗数据库性能，一般不使用。（锁整表）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Transactional</span>(isolation = Isolation.SERIALIZABLE)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">log</span><span class="params">(String message)</span></span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="Mapping-between-level-amp-effects"><a href="#Mapping-between-level-amp-effects" class="headerlink" title="Mapping between level &amp; effects"></a>Mapping between level &amp; effects</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>dirty reads</th>
+<th>non-repeatable reads</th>
+<th>phantom reads</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>READ_UNCOMMITTED</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>READ_COMMITTED</td>
+<td>N</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>REPEATABLE_READ</td>
+<td>N</td>
+<td>N</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>SERIALIZABLE</td>
+<td>N</td>
+<td>N</td>
+<td>N</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>Dirty read:</strong> read the uncommitted change of a concurrent transaction</li>
+<li><strong>Nonrepeatable read</strong>: get different value on re-read of a row if a concurrent transaction updates the same row and commits</li>
+<li><strong>Phantom read:</strong> get different rows after re-execution of a range query if another transaction adds or removes some rows in the range and commits</li>
+</ul>
+<h2 id="Transaction-Propagation"><a href="#Transaction-Propagation" class="headerlink" title="Transaction Propagation"></a>Transaction Propagation</h2><ul>
+<li>PROPAGATION_REQUIRED：如果当前存在事务，则加入该事务；如果当前没有事务，则创建一个新的事务。是Spring默认的传播行为。</li>
+<li>PROPAGATION_REQUIRES_NEW：创建一个新的事务，如果当前存在事务，则把当前事务挂起。</li>
+<li>PROPAGATION_SUPPORTS：如果当前存在事务，则加入该事务；如果当前没有事务，则以非事务的方式继续运行。</li>
+<li>PROPAGATION_NOT_SUPPORTED：以非事务方式运行，如果当前存在事务，则把当前事务挂起。</li>
+<li>PROPAGATION_NEVER：以非事务方式运行，如果当前存在事务，则抛出异常。</li>
+<li>PROPAGATION_MANDATORY：如果当前存在事务，则加入该事务；如果当前没有事务，则抛出异常。</li>
+<li>PROPAGATION_NESTED：如果当前存在事务，则创建一个事务作为当前事务的嵌套事务来运行；如果当前没有事务，则该取值等价PROPAGATION_REQUIRED。嵌套事务使用数据库中的保存点来实现，即嵌套事务回滚不影响外部事务，但外部事务回滚将导致嵌套事务回滚。</li>
+</ul>
+<p>用例分析<a href="https://juejin.cn/post/6844903600943022088" target="_blank" rel="noopener">https://juejin.cn/post/6844903600943022088</a></p>
+</div><div class="tags"><a href="/tags/Spring/">Spring</a></div><div class="post-nav"><a class="pre" href="/2021/05/06/jetson-shell-tips/">Environment setting for Nvidia Jetson AGX</a><a class="next" href="/2020/05/01/ubuntu-proxy/">Ubuntu相关设置Tips</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://vanderchen.github.io"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/Kubernetes/" style="font-size: 15px;">Kubernetes</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/Hexo/" style="font-size: 15px;">Hexo</a> <a href="/tags/Travis-CI/" style="font-size: 15px;">Travis CI</a> <a href="/tags/Nvidia-Jetson/" style="font-size: 15px;">Nvidia Jetson</a> <a href="/tags/Helm/" style="font-size: 15px;">Helm</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/Ubuntu/" style="font-size: 15px;">Ubuntu</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/06/13/git/">Git Tips</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/06/jetson-shell-tips/">Environment setting for Nvidia Jetson AGX</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/06/transaction-in-spring/">Transactions in Spring</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/01/ubuntu-proxy/">Ubuntu相关设置Tips</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/02/18/k8s/">Ubuntu下搭建Kubernetes + Docker环境</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/17/hexo/">使用Travis CI自动部署基于Hexo的个人blog到Github Pages</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Links</i></div><ul></ul><a href="blog.thrimbda.com" title="Thrimbda" target="_blank">Thrimbda</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/." rel="nofollow">VanderChen's Dev Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
