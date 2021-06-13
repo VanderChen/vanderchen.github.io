@@ -1,8 +1,9 @@
 ---
-title: Git使用笔记
+title: Git Tips
 date: {{date}}
 tags: 
 - Git
 ---
 
 ## Git set 
+
