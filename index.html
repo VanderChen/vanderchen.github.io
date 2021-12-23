@@ -128,12 +128,12 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
@@ -182,7 +182,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/12/18/git/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/12/23/git/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://gitee.com/vanderchen/personal-image-hosting-gitee/raw/master/profile.png">
@@ -195,7 +195,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/12/18/git/" class="post-title-link" itemprop="url">Git Tips</a>
+          <a href="/2021/12/23/git/" class="post-title-link" itemprop="url">Git Tips</a>
         </h2>
 
         <div class="post-meta-container">
@@ -206,7 +206,7 @@
       </span>
       <span class="post-meta-item-text">Posted on</span>
 
-      <time title="Created: 2021-12-18 13:49:36" itemprop="dateCreated datePublished" datetime="2021-12-18T13:49:36+00:00">2021-12-18</time>
+      <time title="Created: 2021-12-23 14:10:21" itemprop="dateCreated datePublished" datetime="2021-12-23T14:10:21+00:00">2021-12-23</time>
     </span>
 
   
@@ -222,6 +222,123 @@
           <h2 id="Git-submodules"><a href="#Git-submodules" class="headerlink" title="Git submodules"></a>Git submodules</h2><h3 id="Add-submodules"><a href="#Add-submodules" class="headerlink" title="Add submodules"></a>Add submodules</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git submodule add </span><br></pre></td></tr></table></figure>
 
 
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/12/23/onix/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://gitee.com/vanderchen/personal-image-hosting-gitee/raw/master/profile.png">
+      <meta itemprop="name" content="Vander Chen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Vander's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/12/23/onix/" class="post-title-link" itemprop="url">Paper Reading</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-12-23 14:10:21" itemprop="dateCreated datePublished" datetime="2021-12-23T14:10:21+00:00">2021-12-23</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="预备知识——-SDN-vs-传统网络"><a href="#预备知识——-SDN-vs-传统网络" class="headerlink" title="预备知识—— SDN vs 传统网络"></a>预备知识—— SDN vs 传统网络</h2><blockquote>
+<p>资料来源：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/33383947">SDN学习总结</a></p>
+</blockquote>
+<p>传统网络——固定路由</p>
+<ul>
+<li>流量路径的灵活调整能力不足：传统分布式控制算法采用最短路径进行路由计算，而有时候最短路径已经拥塞，系统却没有办法进行自动调节，只能看着最短路径拥塞，而实际有其他路径却空闲着。</li>
+<li>传统网络协议复杂，运行维护复杂：数以千计的协议族标准，设备厂家各有自己的扩展，运行维护非常复杂。</li>
+<li>传统网络的新业务创新速度太慢：当要在传统网络中部署新业务时，讨论需求、定义标准、达成一致、发布标准、设备供应商支撑标准、对现网设备进行升级，整体过程从需求提出到业务支撑，需要长达3-5年的时间。</li>
+</ul>
+<p>SDN——动态路由</p>
+<p>转控分离、集中控制、开放接口。</p>
+<p><img src="https://gitee.com/VanderChen/personal-image-hosting-gitee/raw/master/images/202112232206848.png" alt="img"></p>
+<h2 id="Onix-控制器"><a href="#Onix-控制器" class="headerlink" title="Onix 控制器"></a>Onix 控制器</h2><p>Onix, a platform on top of which a network control plane can be implemented as a distributed system.</p>
+<p>要实现的目标</p>
+<ul>
+<li>Generality: 控制平台的 API 允许应用程序提供在各种上下文中的功能</li>
+<li>Scalability: 适应快速增长的网络</li>
+<li>Reliability: 能够处理设备失效</li>
+<li>Simplicity: 需要简化构造管理应用程序的任务</li>
+<li>Control plane performance: 控制面不应引入重大的额外延迟或以其他方式阻碍管理应用程序。不需要最优时延，而是与通用性做一个trade-off</li>
+</ul>
+<h2 id="Challenaging-reqiuirements"><a href="#Challenaging-reqiuirements" class="headerlink" title="Challenaging reqiuirements"></a>Challenaging reqiuirements</h2><h3 id="Components"><a href="#Components" class="headerlink" title="Components"></a>Components</h3><ul>
+<li><p>Physical infrastructure</p>
+<p>这包括网络交换机和路由器，以及任何其他网络支持的元素（例如负载平衡器）</p>
+</li>
+<li><p>Connectivity infrastructure</p>
+<p>控制面和Onix之间的通信，分为In-band 和Out-band（control traffic 和data traffic分离）</p>
+</li>
+<li><p>Onix</p>
+<p>Onix 是一个分布式系统，运行在一个或多个物理服务器的集群，每个它可以运行多个 Onix 实例。作为控制平台，Onix 负责给予控制逻辑对网络的编程访问</p>
+<p>工作</p>
+</li>
+<li><p>Control logic</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/VanderChen/personal-image-hosting-gitee/raw/master/images/202112232205644.png" alt="image-20211223202747886"></p>
+<h3 id="The-Onix-API"><a href="#The-Onix-API" class="headerlink" title="The Onix API"></a>The Onix API</h3><p>网络状态被储存在Network Information Base（NIB）中。</p>
+<p><em>是Onix的核心概念，可以理解为最小的控制单元，后文的拓展性和可靠性都依赖于NIB</em></p>
+<p><img src="https://gitee.com/VanderChen/personal-image-hosting-gitee/raw/master/images/202112232205065.png" alt="image-20211223203128378"></p>
+<h3 id="Network-Information-Base-Details"><a href="#Network-Information-Base-Details" class="headerlink" title="Network Information Base Details"></a>Network Information Base Details</h3><p><img src="https://gitee.com/VanderChen/personal-image-hosting-gitee/raw/master/images/202112232206584.png" alt="image-20211223202957358"></p>
+<h2 id="Scaling-and-Reliability"><a href="#Scaling-and-Reliability" class="headerlink" title="Scaling and Reliability"></a>Scaling and Reliability</h2><h3 id="Scalability"><a href="#Scalability" class="headerlink" title="Scalability"></a>Scalability</h3><ul>
+<li>Partitioning</li>
+<li>Aggregation.</li>
+<li>Consistency and durability</li>
+</ul>
+<h4 id="Partition"><a href="#Partition" class="headerlink" title="Partition"></a>Partition</h4><p>当物理节点的过多，超出一个server的memory size，则分区。分区后使用DHT存在多个NIB中。</p>
+<h4 id="Aggregate"><a href="#Aggregate" class="headerlink" title="Aggregate"></a>Aggregate</h4><p>当流表变化过于频繁，超出了CPU的限制，则聚合。将一组拓扑视为一个逻辑上的node。</p>
+<h4 id="Partition-further"><a href="#Partition-further" class="headerlink" title="Partition further"></a>Partition further</h4><p>没太看懂，大意是说虽然拓扑被存放在了多个NIB中，但是仍会做一个联合决策。具体来说，NIB中路由自治，controller只控制NIB间路由。</p>
+<h4 id="Inter-domain-aggregation"><a href="#Inter-domain-aggregation" class="headerlink" title="Inter-domain aggregation"></a>Inter-domain aggregation</h4><p>需要在控制逻辑上做出更改</p>
+<h3 id="Reliability"><a href="#Reliability" class="headerlink" title="Reliability"></a>Reliability</h3><h4 id="Network-element-and-link-failures"><a href="#Network-element-and-link-failures" class="headerlink" title="Network element and link failures"></a>Network element and link failures</h4><p>重新计算路由表，走其他链路或交换机。</p>
+<h4 id="Onix-failures"><a href="#Onix-failures" class="headerlink" title="Onix failures"></a>Onix failures</h4><p>两种选择：使用空闲实例准备替换或者有多个实例同时工作</p>
+<h4 id="Connectivity-infrastructure-failures"><a href="#Connectivity-infrastructure-failures" class="headerlink" title="Connectivity infrastructure failures"></a>Connectivity infrastructure failures</h4><p>该种情况不易发生，文中给出了几个情况大意是还剩什么联通方式就用什么联通方式。</p>
+<h2 id="Distributing-the-NIB"><a href="#Distributing-the-NIB" class="headerlink" title="Distributing the NIB"></a>Distributing the NIB</h2><h3 id="State-Distribution-Between-Onix-Instances"><a href="#State-Distribution-Between-Onix-Instances" class="headerlink" title="State Distribution Between Onix Instances"></a>State Distribution Between Onix Instances</h3><p>简单来说，Onix实现了一个事务持久性数据库（transactional persistent database）。由用于传播的复制状态机支持所有需要持久性和简化的状态更新一致性管理。要将复制的数据库与 NIB 集成，Onix 有用于数据库交互的导入/导出模块。这些组件加载和存储实体来自/到事务的声明及其属性数据库。对于需要高更新率和可用性的网络状态能力，Onix 提供了一个单跳的、最终一致的、memory-only DHT。</p>
+<h3 id="Network-Element-State-Management"><a href="#Network-Element-State-Management" class="headerlink" title="Network Element State Management"></a>Network Element State Management</h3><p>Onix 设计并未规定特定的协议管理网元转发状态。而是，应用程序的主要接口是 NIB，任何网络中的元素支持的合适的协议可以在幕后使用以将 NIB 实体保持在与实际网络状态同步</p>
+<h3 id="Consistency-and-Coordination"><a href="#Consistency-and-Coordination" class="headerlink" title="Consistency and Coordination"></a>Consistency and Coordination</h3>
       
     </div>
 
@@ -278,7 +395,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2021-12-18 13:49:36" itemprop="dateModified" datetime="2021-12-18T13:49:36+00:00">2021-12-18</time>
+      <time title="Modified: 2021-12-23 14:10:21" itemprop="dateModified" datetime="2021-12-23T14:10:21+00:00">2021-12-23</time>
     </span>
 
   
@@ -353,7 +470,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2021-12-18 13:49:36" itemprop="dateModified" datetime="2021-12-18T13:49:36+00:00">2021-12-18</time>
+      <time title="Modified: 2021-12-23 14:10:21" itemprop="dateModified" datetime="2021-12-23T14:10:21+00:00">2021-12-23</time>
     </span>
 
   
@@ -490,7 +607,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2021-12-18 13:49:36" itemprop="dateModified" datetime="2021-12-18T13:49:36+00:00">2021-12-18</time>
+      <time title="Modified: 2021-12-23 14:10:21" itemprop="dateModified" datetime="2021-12-23T14:10:21+00:00">2021-12-23</time>
     </span>
 
   
@@ -568,7 +685,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2021-12-18 13:49:36" itemprop="dateModified" datetime="2021-12-18T13:49:36+00:00">2021-12-18</time>
+      <time title="Modified: 2021-12-23 14:10:21" itemprop="dateModified" datetime="2021-12-23T14:10:21+00:00">2021-12-23</time>
     </span>
 
   
@@ -654,7 +771,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2021-12-18 13:49:36" itemprop="dateModified" datetime="2021-12-18T13:49:36+00:00">2021-12-18</time>
+      <time title="Modified: 2021-12-23 14:10:21" itemprop="dateModified" datetime="2021-12-23T14:10:21+00:00">2021-12-23</time>
     </span>
 
   
