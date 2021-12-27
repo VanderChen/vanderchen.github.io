@@ -213,7 +213,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2021-12-27 17:05:16" itemprop="dateModified" datetime="2021-12-27T17:05:16+00:00">2021-12-27</time>
+      <time title="Modified: 2021-12-27 17:29:30" itemprop="dateModified" datetime="2021-12-27T17:29:30+00:00">2021-12-27</time>
     </span>
 
   
@@ -226,61 +226,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p><a target="_blank" rel="noopener" href="https://www.usenix.org/legacy/events/osdi10/tech/full_papers/Koponen.pdf">Paper Link</a></p>
-</blockquote>
-<h2 id="预备知识——-SDN-vs-传统网络"><a href="#预备知识——-SDN-vs-传统网络" class="headerlink" title="预备知识—— SDN vs 传统网络"></a>预备知识—— SDN vs 传统网络</h2><p>传统网络——固定路由</p>
-<ul>
-<li>流量路径的灵活调整能力不足：传统分布式控制算法采用最短路径进行路由计算，而有时候最短路径已经拥塞，系统却没有办法进行自动调节，只能看着最短路径拥塞，而实际有其他路径却空闲着。</li>
-<li>传统网络协议复杂，运行维护复杂：数以千计的协议族标准，设备厂家各有自己的扩展，运行维护非常复杂。</li>
-<li>传统网络的新业务创新速度太慢：当要在传统网络中部署新业务时，讨论需求、定义标准、达成一致、发布标准、设备供应商支撑标准、对现网设备进行升级，整体过程从需求提出到业务支撑，需要长达3-5年的时间。</li>
-</ul>
-<p>SDN——动态路由</p>
-<p>转控分离、集中控制、开放接口。</p>
-<p><img src="https://gitee.com/VanderChen/personal-image-hosting-gitee/raw/master/images/202112232206848.png" alt="img"></p>
-<h2 id="Onix"><a href="#Onix" class="headerlink" title="Onix"></a>Onix</h2><p>Onix, a platform on top of which a network control plane can be implemented as a distributed system.</p>
-<p>Requirements</p>
-<ul>
-<li>Generality: 控制平台的 API 允许应用程序提供在各种上下文中的功能</li>
-<li>Scalability: 适应快速增长的网络</li>
-<li>Reliability: 能够处理设备失效</li>
-<li>Simplicity: 需要简化构造管理应用程序的任务</li>
-<li>Control plane performance: 控制面不应引入重大的额外延迟或以其他方式阻碍管理应用程序。不需要最优时延，而是与通用性做一个trade-off</li>
-</ul>
-<h3 id="Components"><a href="#Components" class="headerlink" title="Components"></a>Components</h3><ul>
-<li><p>Physical infrastructure</p>
-<p>这包括网络交换机和路由器，以及任何其他网络支持的元素（例如负载平衡器）</p>
-</li>
-<li><p>Connectivity infrastructure</p>
-<p>控制面和Onix之间的通信，分为In-band 和Out-band（control traffic 和data traffic分离）</p>
-</li>
-<li><p>Onix</p>
-<p>Onix 是一个分布式系统，运行在一个或多个物理服务器的集群，每个它可以运行多个 Onix 实例。作为控制平台，Onix 负责给予控制逻辑对网络的编程访问</p>
-<p>工作</p>
-</li>
-<li><p>Control logic</p>
-</li>
-</ul>
-<p><img src="https://gitee.com/VanderChen/personal-image-hosting-gitee/raw/master/images/202112232205644.png" alt="image-20211223202747886"></p>
-<h3 id="The-Onix-API"><a href="#The-Onix-API" class="headerlink" title="The Onix API"></a>The Onix API</h3><p>网络状态被储存在Network Information Base（NIB）中。</p>
-<p><em>是Onix的核心概念，可以理解为最小的控制单元，后文的拓展性和可靠性都依赖于NIB</em></p>
-<p><img src="https://gitee.com/VanderChen/personal-image-hosting-gitee/raw/master/images/202112232205065.png" alt="image-20211223203128378"></p>
-<h3 id="Network-Information-Base-Details"><a href="#Network-Information-Base-Details" class="headerlink" title="Network Information Base Details"></a>Network Information Base Details</h3><p><img src="https://gitee.com/VanderChen/personal-image-hosting-gitee/raw/master/images/202112232206584.png" alt="image-20211223202957358"></p>
-<h2 id="Scaling-and-Reliability"><a href="#Scaling-and-Reliability" class="headerlink" title="Scaling and Reliability"></a>Scaling and Reliability</h2><h3 id="Scalability"><a href="#Scalability" class="headerlink" title="Scalability"></a>Scalability</h3><ul>
-<li>Partitioning</li>
-<li>Aggregation.</li>
-<li>Consistency and durability</li>
-</ul>
-<h4 id="Partition"><a href="#Partition" class="headerlink" title="Partition"></a>Partition</h4><p>当物理节点的过多，超出一个server的memory size，则分区。分区后使用DHT存在多个NIB中。</p>
-<h4 id="Aggregate"><a href="#Aggregate" class="headerlink" title="Aggregate"></a>Aggregate</h4><p>当流表变化过于频繁，超出了CPU的限制，则聚合。将一组拓扑视为一个逻辑上的node。</p>
-<h4 id="Partition-further"><a href="#Partition-further" class="headerlink" title="Partition further"></a>Partition further</h4><p>没太看懂，大意是说虽然拓扑被存放在了多个NIB中，但是仍会做一个联合决策。具体来说，NIB中路由自治，controller只控制NIB间路由。</p>
-<h4 id="Inter-domain-aggregation"><a href="#Inter-domain-aggregation" class="headerlink" title="Inter-domain aggregation"></a>Inter-domain aggregation</h4><p>需要在控制逻辑上做出更改</p>
-<h3 id="Reliability"><a href="#Reliability" class="headerlink" title="Reliability"></a>Reliability</h3><h4 id="Network-element-and-link-failures"><a href="#Network-element-and-link-failures" class="headerlink" title="Network element and link failures"></a>Network element and link failures</h4><p>重新计算路由表，走其他链路或交换机。</p>
-<h4 id="Onix-failures"><a href="#Onix-failures" class="headerlink" title="Onix failures"></a>Onix failures</h4><p>两种选择：使用空闲实例准备替换或者有多个实例同时工作</p>
-<h4 id="Connectivity-infrastructure-failures"><a href="#Connectivity-infrastructure-failures" class="headerlink" title="Connectivity infrastructure failures"></a>Connectivity infrastructure failures</h4><p>该种情况不易发生，文中给出了几个情况大意是还剩什么联通方式就用什么联通方式。</p>
-<h2 id="Distributing-the-NIB"><a href="#Distributing-the-NIB" class="headerlink" title="Distributing the NIB"></a>Distributing the NIB</h2><h3 id="State-Distribution-Between-Onix-Instances"><a href="#State-Distribution-Between-Onix-Instances" class="headerlink" title="State Distribution Between Onix Instances"></a>State Distribution Between Onix Instances</h3><p>简单来说，Onix实现了一个事务持久性数据库（transactional persistent database）。由用于传播的复制状态机支持所有需要持久性和简化的状态更新一致性管理。要将复制的数据库与 NIB 集成，Onix 有用于数据库交互的导入/导出模块。这些组件加载和存储实体来自/到事务的声明及其属性数据库。对于需要高更新率和可用性的网络状态能力，Onix 提供了一个单跳的、最终一致的、memory-only DHT。</p>
-<h3 id="Network-Element-State-Management"><a href="#Network-Element-State-Management" class="headerlink" title="Network Element State Management"></a>Network Element State Management</h3><p>Onix 设计并未规定特定的协议管理网元转发状态。而是，应用程序的主要接口是 NIB，任何网络中的元素支持的合适的协议可以在幕后使用以将 NIB 实体保持在与实际网络状态同步</p>
-<h3 id="Consistency-and-Coordination"><a href="#Consistency-and-Coordination" class="headerlink" title="Consistency and Coordination"></a>Consistency and Coordination</h3>
+          <p>Reading note of [Onix. A Distributed Control Platform for Large-scale Production Networks](https://www.usenix.org/legacy/events/osdi10/tech/full_papers/Koponen.pdf)</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/12/23/onix/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -337,7 +291,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2021-12-27 17:05:16" itemprop="dateModified" datetime="2021-12-27T17:05:16+00:00">2021-12-27</time>
+      <time title="Modified: 2021-12-27 17:29:30" itemprop="dateModified" datetime="2021-12-27T17:29:30+00:00">2021-12-27</time>
     </span>
 
   
@@ -350,9 +304,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="Git-submodules"><a href="#Git-submodules" class="headerlink" title="Git submodules"></a>Git submodules</h2><h3 id="Add-submodules"><a href="#Add-submodules" class="headerlink" title="Add submodules"></a>Add submodules</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git submodule add </span><br></pre></td></tr></table></figure>
-
-
+          <p>Usage notes for Git.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/12/06/git/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -409,7 +369,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2021-12-27 17:05:16" itemprop="dateModified" datetime="2021-12-27T17:05:16+00:00">2021-12-27</time>
+      <time title="Modified: 2021-12-27 17:29:30" itemprop="dateModified" datetime="2021-12-27T17:29:30+00:00">2021-12-27</time>
     </span>
 
   
@@ -422,12 +382,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="Install-PyTorch-v1-8-and-torchvision-v0-9-0"><a href="#Install-PyTorch-v1-8-and-torchvision-v0-9-0" class="headerlink" title="Install PyTorch v1.8 and torchvision v0.9.0"></a>Install PyTorch v1.8 and torchvision v0.9.0</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ ! -d <span class="string">&quot;~/torch&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">  curl -o torch.tar.gz 47.92.80.237/download/torch</span><br><span class="line">  tar zxvf torch.tar.gz</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> torch</span><br><span class="line"></span><br><span class="line"><span class="comment"># install torch v1.8.0 for python 3.6</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$1</span> | sudo -S apt-get install -y python3-pip libopenblas-base libopenmpi-dev </span><br><span class="line">pip3 install Cython -i https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">pip3 install numpy -i https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">pip3 install torch-1.8.0-cp36-cp36m-linux_aarch64.whl</span><br><span class="line"></span><br><span class="line"><span class="comment"># install torchvision v0.9.0</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$1</span> | sudo -S apt-get install -y libjpeg-dev zlib1g-dev libpython3-dev libavcodec-dev libavformat-dev libswscale-dev</span><br><span class="line"><span class="built_in">cd</span> torchvision</span><br><span class="line"><span class="built_in">export</span> BUILD_VERSION=0.9.0</span><br><span class="line">python3 setup.py install --user</span><br></pre></td></tr></table></figure>
-
-<h2 id="Mount-SD-card"><a href="#Mount-SD-card" class="headerlink" title="Mount SD card"></a>Mount SD card</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">sudo fdisk -l</span><br><span class="line">sudo mkfs.ntfs /dev/nvme0n1</span><br><span class="line">sudo mkdir /data</span><br><span class="line">sudo mount /dev/nvme0n1 /data</span><br><span class="line">sudo <span class="built_in">echo</span> <span class="string">&quot;/dev/nvme0n1         /data                 ntfs           defaults                                     0  2&quot;</span> &gt;&gt; \etc\fstab</span><br></pre></td></tr></table></figure>
-
-<p>We should notice that <strong>/nvme0n1</strong> is the device id which we find by the command <strong>fdisk -l</strong>.</p>
-
+          <p>Instruction of setting Environment for Nvidia Jetson AGX</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/05/06/jetson-shell-tips/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -484,7 +447,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2021-12-27 17:05:16" itemprop="dateModified" datetime="2021-12-27T17:05:16+00:00">2021-12-27</time>
+      <time title="Modified: 2021-12-27 17:29:30" itemprop="dateModified" datetime="2021-12-27T17:29:30+00:00">2021-12-27</time>
     </span>
 
   
@@ -621,7 +584,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2021-12-27 17:05:16" itemprop="dateModified" datetime="2021-12-27T17:05:16+00:00">2021-12-27</time>
+      <time title="Modified: 2021-12-27 17:29:30" itemprop="dateModified" datetime="2021-12-27T17:29:30+00:00">2021-12-27</time>
     </span>
 
   
@@ -699,7 +662,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2021-12-27 17:05:16" itemprop="dateModified" datetime="2021-12-27T17:05:16+00:00">2021-12-27</time>
+      <time title="Modified: 2021-12-27 17:29:30" itemprop="dateModified" datetime="2021-12-27T17:29:30+00:00">2021-12-27</time>
     </span>
 
   
@@ -712,23 +675,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>在Ubuntu环境下搭建Kubernetes管理的Docker集群</p>
-<ul>
-<li>Ubuntu下Docker的安装 <a target="_blank" rel="noopener" href="https://docs.docker.com/install/linux/docker-ce/ubuntu/">Get Docker Engine - Community for Ubuntu</a></li>
-<li>Kubernetes的安装：实验环境下我们使用Microk8s</li>
-<li>Kubernetes的安装：实验环境下我们使用MiniKube <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/tasks/tools/install-minikube/">Install Minikube</a></li>
-</ul>
-<h3 id="踩坑–网络问题"><a href="#踩坑–网络问题" class="headerlink" title="踩坑–网络问题"></a>踩坑–网络问题</h3><h4 id="Docker换源"><a href="#Docker换源" class="headerlink" title="Docker换源"></a>Docker换源</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;registry-mirrors&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;http://registry.docker-cn.com&quot;</span>,</span><br><span class="line">    <span class="string">&quot;http://docker.mirrors.ustc.edu.cn&quot;</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">&quot;insecure-registries&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;registry.docker-cn.com&quot;</span>,</span><br><span class="line">    <span class="string">&quot;docker.mirrors.ustc.edu.cn&quot;</span></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="阿里云镜像安装k8s"><a href="#阿里云镜像安装k8s" class="headerlink" title="阿里云镜像安装k8s"></a>阿里云镜像安装k8s</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get update &amp;&amp; apt-get install -y apt-transport-https</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add -</span><br></pre></td></tr></table></figure>
-
-<p>向<code>/etc/apt/sources.list.d/kubernetes.list</code>中添加</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br><span class="line">apt-get install -y kubelet kubeadm kubectl</span><br></pre></td></tr></table></figure>
-
+          <p>Notes for Kubernates.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/02/18/k8s/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -785,7 +740,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2021-12-27 17:05:16" itemprop="dateModified" datetime="2021-12-27T17:05:16+00:00">2021-12-27</time>
+      <time title="Modified: 2021-12-27 17:29:30" itemprop="dateModified" datetime="2021-12-27T17:29:30+00:00">2021-12-27</time>
     </span>
 
   
@@ -798,28 +753,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>具体操作流程参考：</p>
-<ul>
-<li>建站流程 <a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/setup">Hexo建站</a></li>
-<li>利用Travis CI实现自动部署 <a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/github-pages">将 Hexo 部署到 GitHub Pages</a></li>
-</ul>
-<h2 id="踩坑"><a href="#踩坑" class="headerlink" title="踩坑"></a>踩坑</h2><h3 id="建站过程"><a href="#建站过程" class="headerlink" title="建站过程"></a>建站过程</h3><ul>
-<li><code>hexo init &lt;project name&gt;</code> 需要一个空文件夹，可建好后粘贴内容到Git目录下</li>
-<li>删除未使用主题，否则在部署到github pages时可能引起报错</li>
-</ul>
-<h3 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h3><p>源码仅包含以下文件</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── _config.yml</span><br><span class="line">├── package.json</span><br><span class="line">├── scaffolds</span><br><span class="line">├── source</span><br><span class="line">|   ├── _drafts</span><br><span class="line">|   └── _posts</span><br><span class="line">└── themes</span><br></pre></td></tr></table></figure>
-
-<p>在以Node为模板的.gitignore文件中需要加入</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public/</span><br><span class="line">db.json</span><br><span class="line">package-lock.json</span><br></pre></td></tr></table></figure>
-
-<h3 id="Travis-CI"><a href="#Travis-CI" class="headerlink" title="Travis CI"></a>Travis CI</h3><p>因为github pages规则的变化，user pages（即以&lt;user name&gt;.github.io命名的repo）生成pages文件仅仅只能放在master branch中。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">User pages must be built from the master branch.</span><br></pre></td></tr></table></figure>
-
-<p>因此建立hexo branch作为source code，通过Travis CI部署到master branch下。</p>
-<p>具体配置文件如下：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">sudo:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">language:</span> <span class="string">node_js</span></span><br><span class="line"><span class="attr">node_js:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="number">10</span> <span class="comment"># use nodejs v10 LTS</span></span><br><span class="line"><span class="attr">cache:</span> <span class="string">npm</span></span><br><span class="line"><span class="attr">branches:</span></span><br><span class="line">  <span class="attr">only:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">hexo</span> <span class="comment"># build hexo branch only</span></span><br><span class="line"><span class="attr">script:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">hexo</span> <span class="string">generate</span> <span class="comment"># generate static files</span></span><br><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">provider:</span> <span class="string">pages</span></span><br><span class="line">  <span class="attr">skip-cleanup:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">github-token:</span> <span class="string">$GH_TOKEN</span></span><br><span class="line">  <span class="attr">keep-history:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">on:</span></span><br><span class="line">    <span class="attr">branch:</span> <span class="string">hexo</span></span><br><span class="line">  <span class="attr">target_branch:</span> <span class="string">master</span></span><br><span class="line">  <span class="attr">local-dir:</span> <span class="string">public</span></span><br></pre></td></tr></table></figure>
-
+          <p>Deprecated due to the change of Travis CI</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/02/17/hexo/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
