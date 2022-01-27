@@ -128,12 +128,12 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
@@ -182,6 +182,113 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/01/27/msu-hpcc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://gitee.com/vanderchen/personal-image-hosting-gitee/raw/master/profile.png">
+      <meta itemprop="name" content="Vander Chen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Vander's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/01/27/msu-hpcc/" class="post-title-link" itemprop="url">Instruction for Jupyter in MSU HPCC</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-01-27 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-27T00:00:00+00:00">2022-01-27</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="Install-Anaconda-via-SSH"><a href="#Install-Anaconda-via-SSH" class="headerlink" title="Install Anaconda via SSH"></a>Install Anaconda via SSH</h2><p>Same as other Linux platform, an <a target="_blank" rel="noopener" href="https://www.anaconda.com/products/individual">Anaconda Installer</a> needs to be stored in home directory. The home directory will be mounted to the host automatically.</p>
+<p><em>- For the convenience of usage, installing Anaconda in Jupyter is not recommended. Since the host will change for each task applied and the system execution results in Jupyter are not persistent.</em></p>
+<p><img src="https://gitee.com/VanderChen/personal-image-hosting-gitee/raw/master/images/202201271110619.png" alt="image-20220127111024217"></p>
+<p>Anaconda can be install as following command line.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh Anaconda3-2021.11-Linux-x86_64.sh</span><br></pre></td></tr></table></figure>
+
+<p><em>- Do not use sudo</em><br><em>- The auto init is recommended, which is [no] by default</em></p>
+<p>To activate the conda environment for the first time, <code>source .bashrc</code> or restart the terminal is all you need.</p>
+<h2 id="Install-miniGAP"><a href="#Install-miniGAP" class="headerlink" title="Install miniGAP"></a>Install miniGAP</h2><p>Following the Introduction in the official <a target="_blank" rel="noopener" href="https://github.com/alvarovm/minigap">Github</a>, we install minigap from the command line.</p>
+<h3 id="CPU-version"><a href="#CPU-version" class="headerlink" title="CPU version"></a>CPU version</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/alvarovm/minigap.git</span><br><span class="line"><span class="built_in">cd</span> minigap</span><br><span class="line">conda env create -f environment.yml</span><br></pre></td></tr></table></figure>
+
+<p>A conda environment named <strong>minigap</strong> is created. Additionally, Jupyter needs to be installed manually.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">conda activate minigap</span><br><span class="line">pip install notebook</span><br></pre></td></tr></table></figure>
+
+<h3 id="GPU-version-TODO-still-existing-something-wrong"><a href="#GPU-version-TODO-still-existing-something-wrong" class="headerlink" title="GPU version (TODO: still existing something wrong)"></a>GPU version (TODO: still existing something wrong)</h3><p>Due the lack of root privilege, we cannot install cuda from NVIDIA official web.</p>
+<p>An alternative method is <a target="_blank" rel="noopener" href="https://wiki.hpcc.msu.edu/display/ITH/Common+Module+Commands">loading module</a> which provided by MSU HPCC.</p>
+<p>We check the provided module <strong>(Some of them listed but do not work)</strong>, and load the modules we need.</p>
+<p><img src="https://gitee.com/VanderChen/personal-image-hosting-gitee/raw/master/images/202201271128674.png" alt="image-20220127112811678"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">module purge</span><br><span class="line">module load GCC/8.2.0-2.31.1 </span><br><span class="line">module load cuDNN/8.0.5.39-CUDA-11.0.2</span><br></pre></td></tr></table></figure>
+
+<p>Due to version issues, we make modifications on the <a target="_blank" rel="noopener" href="https://github.com/alvarovm/minigap/blob/current/environment-gpu.yml">original yml file</a> and save as <code>environment-gpu-custom.yml</code>.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">minigap-gpu</span></span><br><span class="line"><span class="attr">dependencies:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">python=3.7</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">ipykernel</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">scikit-learn</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">cudatoolkit=11.3</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">cudnn=8</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">pip</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">pip:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">tensorflow==2.4.0</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">ase</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">dscribe</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">tqdm</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">gpflow</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">skcosmo</span></span><br></pre></td></tr></table></figure>
+
+<p>Then, we install from environment <code>.yml</code> file.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/alvarovm/minigap.git</span><br><span class="line"><span class="built_in">cd</span> minigap</span><br><span class="line">conda env create -f environment-gpu-custom.yml</span><br></pre></td></tr></table></figure>
+
+<h2 id="Usage-of-Jupyter"><a href="#Usage-of-Jupyter" class="headerlink" title="Usage of  Jupyter"></a>Usage of  Jupyter</h2><p>We use Jupyter from <a target="_blank" rel="noopener" href="https://wiki.hpcc.msu.edu/display/ITH/Open+OnDemand">Open OnDemand</a>. [ <a target="_blank" rel="noopener" href="https://ondemand.hpcc.msu.edu/">Connection to HPCC OnDemand</a> ] </p>
+<ol>
+<li><p>choose Jupyter Notebook in Interactive Apps</p>
+<p><img src="https://gitee.com/VanderChen/personal-image-hosting-gitee/raw/master/images/202201271147882.png" alt="image-20220127114734212"></p>
+</li>
+<li><p>config the notebook and specify the anaconda path in Advance Options</p>
+<p><img src="D:/other-workplace/hexo-blog-source/source/_posts/msu-hpcc.assets/image-20220127115204189.png" alt="image-20220127115204189"></p>
+</li>
+<li><p>Submit apply. </p>
+<p><img src="https://gitee.com/VanderChen/personal-image-hosting-gitee/raw/master/images/202201271152381.png" alt="image-20220127115226178"></p>
+</li>
+<li><p>Connect to Jupyter Notebook.</p>
+<p><img src="https://gitee.com/VanderChen/personal-image-hosting-gitee/raw/master/images/202201271159930.png" alt="image-20220127115930931"></p>
+</li>
+</ol>
+<h3 id="Special-for-miniGAP"><a href="#Special-for-miniGAP" class="headerlink" title="Special for miniGAP"></a>Special for miniGAP</h3><p>Due to the relative path in the provided notebook (<code>sys.path.append(&#39;../code&#39;)</code>), all the <code>.ipynb</code> files should be put in the <code>notebooks</code> directory.</p>
+<p><img src="https://gitee.com/VanderChen/personal-image-hosting-gitee/raw/master/images/202201271204764.png" alt="image-20220127120411101"></p>
+<p>Then, click the notebook you need, and enjoy your studying.</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/12/23/onix/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -213,7 +320,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-01-27 02:03:08" itemprop="dateModified" datetime="2022-01-27T02:03:08+00:00">2022-01-27</time>
+      <time title="Modified: 2022-01-27 04:09:10" itemprop="dateModified" datetime="2022-01-27T04:09:10+00:00">2022-01-27</time>
     </span>
 
   
@@ -291,7 +398,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-01-27 02:03:08" itemprop="dateModified" datetime="2022-01-27T02:03:08+00:00">2022-01-27</time>
+      <time title="Modified: 2022-01-27 04:09:10" itemprop="dateModified" datetime="2022-01-27T04:09:10+00:00">2022-01-27</time>
     </span>
 
   
@@ -369,7 +476,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-01-27 02:03:08" itemprop="dateModified" datetime="2022-01-27T02:03:08+00:00">2022-01-27</time>
+      <time title="Modified: 2022-01-27 04:09:10" itemprop="dateModified" datetime="2022-01-27T04:09:10+00:00">2022-01-27</time>
     </span>
 
   
@@ -447,7 +554,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-01-27 02:03:08" itemprop="dateModified" datetime="2022-01-27T02:03:08+00:00">2022-01-27</time>
+      <time title="Modified: 2022-01-27 04:09:10" itemprop="dateModified" datetime="2022-01-27T04:09:10+00:00">2022-01-27</time>
     </span>
 
   
@@ -584,7 +691,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-01-27 02:03:08" itemprop="dateModified" datetime="2022-01-27T02:03:08+00:00">2022-01-27</time>
+      <time title="Modified: 2022-01-27 04:09:10" itemprop="dateModified" datetime="2022-01-27T04:09:10+00:00">2022-01-27</time>
     </span>
 
   
@@ -662,7 +769,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-01-27 02:03:08" itemprop="dateModified" datetime="2022-01-27T02:03:08+00:00">2022-01-27</time>
+      <time title="Modified: 2022-01-27 04:09:10" itemprop="dateModified" datetime="2022-01-27T04:09:10+00:00">2022-01-27</time>
     </span>
 
   
@@ -740,7 +847,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-01-27 02:03:08" itemprop="dateModified" datetime="2022-01-27T02:03:08+00:00">2022-01-27</time>
+      <time title="Modified: 2022-01-27 04:09:10" itemprop="dateModified" datetime="2022-01-27T04:09:10+00:00">2022-01-27</time>
     </span>
 
   
