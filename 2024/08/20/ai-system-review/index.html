@@ -17,24 +17,23 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"vanderchen.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"vanderchen.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.21.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="Survey  Training and Serving System of Foundation Models: A Comprehensive Survey  System  NSDI ‘24 Characterization of Large Language Model Development in the Datacenter  NSDI ‘24 MegaScale: Scaling L">
+    <meta name="description" content="Survey  Training and Serving System of Foundation Models: A Comprehensive Survey  TrainingSystem Architecture  NSDI ‘24 MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs  NSDI">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Paper List for AI System">
 <meta property="og:url" content="http://vanderchen.github.io/2024/08/20/ai-system-review/index.html">
 <meta property="og:site_name" content="Vander&#39;s Blog">
-<meta property="og:description" content="Survey  Training and Serving System of Foundation Models: A Comprehensive Survey  System  NSDI ‘24 Characterization of Large Language Model Development in the Datacenter  NSDI ‘24 MegaScale: Scaling L">
+<meta property="og:description" content="Survey  Training and Serving System of Foundation Models: A Comprehensive Survey  TrainingSystem Architecture  NSDI ‘24 MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs  NSDI">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-08-20T00:00:00.000Z">
-<meta property="article:modified_time" content="2024-10-08T11:52:25.758Z">
+<meta property="article:modified_time" content="2024-11-24T16:06:22.181Z">
 <meta property="article:author" content="Vander Chen">
 <meta property="article:tag" content="Paper-Reading">
 <meta name="twitter:card" content="summary">
 
 
 <link rel="canonical" href="http://vanderchen.github.io/2024/08/20/ai-system-review/">
-
 
 
 <script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://vanderchen.github.io/2024/08/20/ai-system-review/","path":"2024/08/20/ai-system-review/","title":"Paper List for AI System"}</script>
@@ -112,7 +111,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Survey"><span class="nav-number">1.</span> <span class="nav-text">Survey</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#System"><span class="nav-number">2.</span> <span class="nav-text">System</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Resource-Management"><span class="nav-number">2.1.</span> <span class="nav-text">Resource Management</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Training"><span class="nav-number">3.</span> <span class="nav-text">Training</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Parallelism"><span class="nav-number">3.1.</span> <span class="nav-text">Parallelism</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Communication"><span class="nav-number">3.2.</span> <span class="nav-text">Communication</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Warm-up"><span class="nav-number">3.3.</span> <span class="nav-text">Warm up</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Serving"><span class="nav-number">4.</span> <span class="nav-text">Serving</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unclassified"><span class="nav-number">5.</span> <span class="nav-text">Unclassified</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ref"><span class="nav-number">6.</span> <span class="nav-text">Ref</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Survey"><span class="nav-number">1.</span> <span class="nav-text">Survey</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Training"><span class="nav-number">2.</span> <span class="nav-text">Training</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#System-Architecture"><span class="nav-number">2.1.</span> <span class="nav-text">System Architecture</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Parallelism-Communication"><span class="nav-number">2.2.</span> <span class="nav-text">Parallelism &amp; Communication</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Resource-Management-Scheduling"><span class="nav-number">2.3.</span> <span class="nav-text">Resource Management &amp; Scheduling</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Job-Analysis-Optimization"><span class="nav-number">2.4.</span> <span class="nav-text">Job Analysis &amp; Optimization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Failure-Recovery"><span class="nav-number">2.5.</span> <span class="nav-text">Failure Recovery</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Serving"><span class="nav-number">3.</span> <span class="nav-text">Serving</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#System-Architecture-1"><span class="nav-number">3.1.</span> <span class="nav-text">System Architecture</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Resource-Management-Optimization"><span class="nav-number">3.2.</span> <span class="nav-text">Resource Management &amp; Optimization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Memory-Cache-Management"><span class="nav-number">3.3.</span> <span class="nav-text">Memory &amp; Cache Management</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Infrastructure"><span class="nav-number">4.</span> <span class="nav-text">Infrastructure</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Networking"><span class="nav-number">4.1.</span> <span class="nav-text">Networking</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cloud-Serverless"><span class="nav-number">4.2.</span> <span class="nav-text">Cloud &amp; Serverless</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#System-Tools-Analysis"><span class="nav-number">4.3.</span> <span class="nav-text">System Tools &amp; Analysis</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ref"><span class="nav-number">5.</span> <span class="nav-text">Ref</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -203,7 +202,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-10-08 11:52:25" itemprop="dateModified" datetime="2024-10-08T11:52:25+00:00">2024-10-08</time>
+      <time title="Modified: 2024-11-24 16:06:22" itemprop="dateModified" datetime="2024-11-24T16:06:22+00:00">2024-11-24</time>
     </span>
 
   
@@ -218,74 +217,77 @@
     <div class="post-body" itemprop="articleBody"><h2 id="Survey"><a href="#Survey" class="headerlink" title="Survey"></a>Survey</h2><ul>
 <li><input disabled="" type="checkbox"> Training and Serving System of Foundation Models: A Comprehensive Survey</li>
 </ul>
-<h2 id="System"><a href="#System" class="headerlink" title="System"></a>System</h2><ul>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘24</strong> Characterization of Large Language Model Development in the Datacenter</li>
+<h2 id="Training"><a href="#Training" class="headerlink" title="Training"></a>Training</h2><h3 id="System-Architecture"><a href="#System-Architecture" class="headerlink" title="System Architecture"></a>System Architecture</h3><ul>
 <li><input disabled="" type="checkbox"> <strong>NSDI ‘24</strong> MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs</li>
 <li><input disabled="" type="checkbox"> <strong>NSDI ‘24</strong> Resiliency at Scale: Managing Google’s TPUv4 Machine Learning Supercomputer</li>
-<li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> When will my ML Job finish? Toward providing Completion Time Estimates through Predictability-Centric Scheduling</li>
-<li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> MAST: Global Scheduling of ML Training across Geo-Distributed Datacenters at Hyperscale</li>
+<li><input disabled="" type="checkbox"> <strong>SOSP ‘23</strong> Oobleck: Resilient Distributed Training of Large Models Using Pipeline Templates</li>
 </ul>
-<h3 id="Resource-Management"><a href="#Resource-Management" class="headerlink" title="Resource Management"></a>Resource Management</h3><ul>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> Bamboo: Making Preemptible Instances Resilient for Affordable Training of Large DNNs</li>
-</ul>
-<h2 id="Training"><a href="#Training" class="headerlink" title="Training"></a>Training</h2><ul>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘24</strong> DISTMM: Accelerating Distributed Multimodal Model Training</li>
-<li><input disabled="" type="checkbox"> <strong>SOSP ‘23</strong> GEMINI: Fast Failure Recovery in Distributed Training with In-Memory Checkpoints</li>
-</ul>
-<h3 id="Parallelism"><a href="#Parallelism" class="headerlink" title="Parallelism"></a>Parallelism</h3><ul>
+<h3 id="Parallelism-Communication"><a href="#Parallelism-Communication" class="headerlink" title="Parallelism &amp; Communication"></a>Parallelism &amp; Communication</h3><ul>
 <li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> TopoOpt: Co-optimizing Network Topology and Parallelization Strategy for Distributed Training Jobs</li>
-</ul>
-<h3 id="Communication"><a href="#Communication" class="headerlink" title="Communication"></a>Communication</h3><ul>
 <li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> TACCL: Guiding Collective Algorithm Synthesis using Communication Sketches</li>
 <li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> Better Together: Jointly Optimizing ML Collective Scheduling and Execution Planning using SYNDICATE</li>
 <li><input disabled="" type="checkbox"> <strong>SIGCOMM ‘24</strong> Rethinking Machine Learning Collective Communication as a Multi-Commodity Flow Problem</li>
+<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘23</strong> Overlap Communication with Dependent Computation via Decomposition in Large Deep Learning Models</li>
+<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘23</strong> In-Network Aggregation with Transport Transparency for Distributed Training</li>
+<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> Centauri: Enabling Efficient Scheduling for Communication-Computation Overlap in Large Model Training via Communication Partitioning</li>
+<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> AdaPipe: Optimizing Pipeline Parallelism with Adaptive Recomputation and Partitioning</li>
 </ul>
-<h3 id="Warm-up"><a href="#Warm-up" class="headerlink" title="Warm up"></a>Warm up</h3><ul>
+<h3 id="Resource-Management-Scheduling"><a href="#Resource-Management-Scheduling" class="headerlink" title="Resource Management &amp; Scheduling"></a>Resource Management &amp; Scheduling</h3><ul>
+<li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> Bamboo: Making Preemptible Instances Resilient for Affordable Training of Large DNNs</li>
+<li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> Transparent GPU Sharing in Container Clouds for Deep Learning Workloads</li>
+<li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> Shockwave: Fair and Efficient Cluster Scheduling for Dynamic Adaptation in Machine Learning</li>
+<li><input disabled="" type="checkbox"> <strong>SOSP ‘23</strong> Sia: Heterogeneity-aware, goodput-optimized ML-cluster scheduling</li>
+<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘23</strong> Snape: Reliable and Low-Cost Computing with Mixture of Spot and On-demand VMs</li>
+<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘23</strong> Lucid: A Non-Intrusive, Scalable and Interpretable Scheduler for Deep Learning Training Jobs</li>
+<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘23</strong> ElasticFlow: An Elastic Serverless Training Platform for Distributed Deep Learning</li>
+<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> Heet: Accelerating Elastic Training in Heterogeneous Deep Learning Clusters</li>
+<li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> MAST: Global Scheduling of ML Training across Geo-Distributed Datacenters at Hyperscale</li>
+</ul>
+<h3 id="Job-Analysis-Optimization"><a href="#Job-Analysis-Optimization" class="headerlink" title="Job Analysis &amp; Optimization"></a>Job Analysis &amp; Optimization</h3><ul>
+<li><input disabled="" type="checkbox"> <strong>NSDI ‘24</strong> Characterization of Large Language Model Development in the Datacenter</li>
+<li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> When will my ML Job finish? Toward providing Completion Time Estimates through Predictability-Centric Scheduling</li>
 <li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> ModelKeeper: Accelerating DNN Training via Automated Training Warmup</li>
+<li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> BGL: GPU-Efficient GNN Training by Optimizing Graph Data I&#x2F;O and Preprocessing</li>
+<li><input disabled="" type="checkbox"> <strong>SIGCOMM ‘23</strong> anus: A Unified Distributed Training Framework for Sparse Mixture-of-Experts Models</li>
 </ul>
-<h2 id="Serving"><a href="#Serving" class="headerlink" title="Serving"></a>Serving</h2><ul>
+<h3 id="Failure-Recovery"><a href="#Failure-Recovery" class="headerlink" title="Failure Recovery"></a>Failure Recovery</h3><ul>
+<li><input disabled="" type="checkbox"> <strong>SOSP ‘23</strong> GEMINI: Fast Failure Recovery in Distributed Training with In-Memory Checkpoints</li>
+</ul>
+<h2 id="Serving"><a href="#Serving" class="headerlink" title="Serving"></a>Serving</h2><h3 id="System-Architecture-1"><a href="#System-Architecture-1" class="headerlink" title="System Architecture"></a>System Architecture</h3><ul>
 <li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> SHEPHERD: Serving DNNs in the Wild</li>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘24</strong> Approximate Caching for Efficiently Serving Text-to-Image Diffusion Models</li>
 <li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> Taming Throughput-Latency Tradeoff in LLM Inference with Sarathi-Serve</li>
 <li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> ServerlessLLM: Low-Latency Serverless Inference for Large Language Models</li>
 <li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> InfiniGen: Efficient Generative Inference of Large Language Models with Dynamic KV Cache Management</li>
-<li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> Llumnix: Dynamic Scheduling for Large Language Model Serving</li>
 <li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving</li>
-<li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> dLoRA: Dynamically Orchestrating Requests and Adapters for LoRA LLM Serving</li>
+<li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> Llumnix: Dynamic Scheduling for Large Language Model Serving</li>
+</ul>
+<h3 id="Resource-Management-Optimization"><a href="#Resource-Management-Optimization" class="headerlink" title="Resource Management &amp; Optimization"></a>Resource Management &amp; Optimization</h3><ul>
 <li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> USHER: Holistic Interference Avoidance for Resource Optimized ML Inference</li>
 <li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> Fairness in Serving Large Language Models</li>
+<li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> dLoRA: Dynamically Orchestrating Requests and Adapters for LoRA LLM Serving</li>
+<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> ExeGPT: Constraint-Aware Resource Allocator for LLM Inference</li>
+<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> Proteus: A High-Throughput Inference-Serving System with Accuracy Scaling</li>
+<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> SpotServe: Serving Generative Large Language Models on Preemptible Instances</li>
+</ul>
+<h3 id="Memory-Cache-Management"><a href="#Memory-Cache-Management" class="headerlink" title="Memory &amp; Cache Management"></a>Memory &amp; Cache Management</h3><ul>
+<li><input disabled="" type="checkbox"> <strong>NSDI ‘24</strong> Approximate Caching for Efficiently Serving Text-to-Image Diffusion Models</li>
 <li><input disabled="" type="checkbox"> <strong>ATC ‘24</strong> Cost-Efficient Large Language Model Serving for Multi-turn Conversations with CachedAttention</li>
 <li><input disabled="" type="checkbox"> <strong>SOSP ‘23</strong> Efficient Memory Management for Large Language Model Serving with PagedAttention</li>
 <li><input disabled="" type="checkbox"> <strong>SIGCOMM ‘24</strong> CacheGen: KV Cache Compression and Streaming for Fast Large Language Model Serving</li>
 </ul>
-<h2 id="Unclassified"><a href="#Unclassified" class="headerlink" title="Unclassified"></a>Unclassified</h2><ul>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> BGL: GPU-Efficient GNN Training by Optimizing Graph Data I&#x2F;O and Preprocessing</li>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> Transparent GPU Sharing in Container Clouds for Deep Learning Workloads</li>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> Shockwave: Fair and Efficient Cluster Scheduling for Dynamic Adaptation in Machine Learning</li>
-<li><input disabled="" type="checkbox"> <strong>SOSP ‘23</strong> Oobleck: Resilient Distributed Training of Large Models Using Pipeline Templates</li>
-<li><input disabled="" type="checkbox"> <strong>SOSP ‘23</strong> Sia: Heterogeneity-aware, goodput-optimized ML-cluster scheduling</li>
+<h2 id="Infrastructure"><a href="#Infrastructure" class="headerlink" title="Infrastructure"></a>Infrastructure</h2><h3 id="Networking"><a href="#Networking" class="headerlink" title="Networking"></a>Networking</h3><ul>
 <li><input disabled="" type="checkbox"> <strong>SIGCOMM ‘24</strong> NetLLM: Adapting Large Language Models for Networking</li>
 <li><input disabled="" type="checkbox"> <strong>SIGCOMM ‘24</strong> Alibaba HPN: A Data Center Network for Large Language Model Training</li>
-<li><input disabled="" type="checkbox"> <strong>SIGCOMM ‘24</strong> Rethinking Machine Learning Collective Communication as a Multi-Commodity Flow Problem</li>
-<li><input disabled="" type="checkbox"> <strong>SIGCOMM ‘23</strong> anus: A Unified Distributed Training Framework for Sparse Mixture-of-Experts Models</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘23</strong> Overlap Communication with Dependent Computation via Decomposition in Large Deep Learning Models</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘23</strong> Snape: Reliable and Low-Cost Computing with Mixture of Spot and On-demand VMs</li>
+</ul>
+<h3 id="Cloud-Serverless"><a href="#Cloud-Serverless" class="headerlink" title="Cloud &amp; Serverless"></a>Cloud &amp; Serverless</h3><ul>
+<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> RainbowCake: Mitigating Cold-starts in Serverless with Layer-wise Container Caching and Sharing</li>
 <li><input disabled="" type="checkbox"> <strong>ASPLOS ‘23</strong> AQUATOPE: QoS-and-Uncertainty-Aware Resource Management for Multi-stage Serverless Workflows</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘23</strong> In-Network Aggregation with Transport Transparency for Distributed Training</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘23</strong> Lucid: A Non-Intrusive, Scalable and Interpretable Scheduler for Deep Learning Training Jobs</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘23</strong> ElasticFlow: An Elastic Serverless Training Platform for Distributed Deep Learning</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> Centauri: Enabling Efficient Scheduling for Communication-Computation Overlap in Large Model Training via Communication Partitioning</li>
+<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> AUDIBLE: A Convolution-Based Resource Allocator for Oversubscribing Burstable Virtual Machines</li>
+</ul>
+<h3 id="System-Tools-Analysis"><a href="#System-Tools-Analysis" class="headerlink" title="System Tools &amp; Analysis"></a>System Tools &amp; Analysis</h3><ul>
 <li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> Thesios: Synthesizing Accurate Counterfactual I&#x2F;O Traces from I&#x2F;O Samples</li>
 <li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> A Journey of a 1,000 Kernels Begins with a Single Step: A Retrospective of Deep Learning on GPUs</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> ExeGPT: Constraint-Aware Resource Scheduling for LLM Inference</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> Proteus: A High-Throughput Inference-Serving System with Accuracy Scaling</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> SpotServe: Serving Generative Large Language Models on Preemptible Instances</li>
 <li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> DREAM: A Dynamic Scheduler for Dynamic Real-time Multi-model ML Workloads</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> RainbowCake: Mitigating Cold-starts in Serverless with Layer-wise Container Caching and Sharing</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> Heet: Accelerating Elastic Training in Heterogeneous Deep Learning Clusters</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> AdaPipe: Optimizing Pipeline Parallelism with Adaptive Recomputation and Partitioning</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> Heet: Accelerating Elastic Training in Heterogeneous Deep Learning Clusters</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> AUDIBLE: A Convolution-Based Resource Allocator for Oversubscribing Burstable Virtual Machines</li>
 <li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> NDPipe: Exploiting Near-data Processing for Scalable Inference and Continuous Training in Photo Storage</li>
 </ul>
 <h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><ul>

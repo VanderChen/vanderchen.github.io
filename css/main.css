@@ -390,8 +390,7 @@ pre {
   margin: 0 auto 20px;
 }
 figure.highlight figcaption,
-pre .caption,
-pre figcaption {
+pre .caption {
   background: var(--highlight-gutter-background);
   color: var(--highlight-foreground);
   display: flow-root;
@@ -400,14 +399,12 @@ pre figcaption {
   padding: 0.5em;
 }
 figure.highlight figcaption a,
-pre .caption a,
-pre figcaption a {
+pre .caption a {
   color: var(--highlight-foreground);
   float: right;
 }
 figure.highlight figcaption a:hover,
-pre .caption a:hover,
-pre figcaption a:hover {
+pre .caption a:hover {
   border-bottom-color: var(--highlight-foreground);
 }
 pre,
@@ -447,8 +444,6 @@ figure.highlight td {
   padding: 0;
 }
 figure.highlight .gutter {
-  -moz-user-select: none;
-  -ms-user-select: none;
   -webkit-user-select: none;
   user-select: none;
 }
@@ -466,8 +461,7 @@ figure.highlight .code pre {
 figure.highlight .marked {
   background: rgba(0,0,0,0.3);
 }
-pre .caption,
-pre figcaption {
+pre .caption {
   margin-bottom: 10px;
 }
 .gist table {
@@ -563,14 +557,9 @@ pre code {
   display: grid;
   grid-gap: 1.5rem;
   gap: 1.5rem;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   margin-bottom: 20px;
   padding: 1rem;
-}
-@media (max-width: 767px) {
-  .post-body .link-grid {
-    grid-template-columns: 1fr;
-  }
 }
 .post-body .link-grid .link-grid-container {
   border: solid #ddd;
@@ -758,7 +747,6 @@ pre code {
   justify-content: center;
   margin: 0;
   padding: 0;
-  position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: 5;
@@ -1128,7 +1116,7 @@ pre code {
     vertical-align: middle;
   }
   .links-of-author a::before {
-    background: #730988;
+    background: #12fff2;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -1819,8 +1807,7 @@ pre code {
   font-size: 0.875em;
   margin-left: 4px;
 }
-.post-body img + figcaption,
-.post-body .fancybox + figcaption {
+.post-body figure:not(.highlight) figcaption {
   color: #999;
   font-size: 0.875em;
   font-weight: bold;
@@ -2422,7 +2409,6 @@ header.header {
 }
 @media (min-width: 992px) {
   .sidebar {
-    position: -webkit-sticky;
     position: sticky;
     top: 12px;
   }
@@ -2503,10 +2489,5 @@ header.header {
 @media (max-width: 767px) {
   .pagination {
     margin-bottom: 10px;
-  }
-}
-@media (min-width: 992px) and (max-width: 991px) {
-  .sidebar {
-    display: none;
   }
 }
