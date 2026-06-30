@@ -176,454 +176,6 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://vanderchen.github.io/2026/06/30/inference-profiling/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://github.com/VanderChen/picbed/raw/main/blog/profile.png">
-      <meta itemprop="name" content="Vander Chen">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Vander's Blog">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | Vander's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/06/30/inference-profiling/" class="post-title-link" itemprop="url">llm-d 与 NVIDIA Dynamo 性能能力对照总表</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2026-06-30 13:12:52" itemprop="dateCreated datePublished" datetime="2026-06-30T13:12:52+00:00">2026-06-30</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="一、分析口径"><a href="#一、分析口径" class="headerlink" title="一、分析口径"></a>一、分析口径</h2><p>本文不做选型判断，也不讨论差异化，只整理 llm-d 与 NVIDIA Dynamo &#x2F; ai-dynamo 在性能方向已经公开关注和建设的能力。</p>
-<p>分析维度按推理服务生命周期展开：</p>
-<ol>
-<li>服务定义与部署；</li>
-<li>服务拉起与模型加载；</li>
-<li>拓扑与多节点准备；</li>
-<li>请求入口；</li>
-<li>请求路由；</li>
-<li>KV Cache 感知；</li>
-<li>KV Cache 管理；</li>
-<li>KV 传输；</li>
-<li>Prefill&#x2F;Decode 分离；</li>
-<li>多阶段推理编排；</li>
-<li>队列与流控；</li>
-<li>延迟预测；</li>
-<li>扩缩容与容量规划；</li>
-<li>多 variant 管理；</li>
-<li>Batch &#x2F; Async 推理；</li>
-<li>多租户与 adapter 性能；</li>
-<li>Benchmark &#x2F; Profiler &#x2F; 配置搜索；</li>
-<li>长上下文与 Agentic workload；</li>
-<li>RL &#x2F; post-training 性能外延。</li>
-</ol>
-<hr>
-<h2 id="二、性能能力总表"><a href="#二、性能能力总表" class="headerlink" title="二、性能能力总表"></a>二、性能能力总表</h2><table>
-<thead>
-<tr>
-<th>生命周期阶段</th>
-<th>核心问题域</th>
-<th>要解决的问题</th>
-<th>llm-d 相关能力 &#x2F; 项目</th>
-<th>Dynamo &#x2F; NVIDIA 相关能力 &#x2F; 项目</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>1. 服务定义与部署</td>
-<td>模型服务抽象</td>
-<td>如何把模型、runtime、GPU、Gateway、P&#x2F;D 角色、调度策略声明成可部署服务</td>
-<td><code>llm-d</code> 主项目、<code>InferencePool</code>、<code>llm-d-modelservice</code>、well-lit path guides</td>
-<td><code>DynamoGraphDeployment</code>、Dynamo Operator、Helm、CRDs、Dynamo recipes</td>
-</tr>
-<tr>
-<td>2. 服务拉起</td>
-<td>模型加载与冷启动</td>
-<td>大模型权重加载慢，扩容时新副本无法快速进入服务状态</td>
-<td><code>llm-d-fast-model-actuation</code>：sleep&#x2F;wake、model swapping、快速实例状态切换</td>
-<td><code>ModelExpress</code>：通过 NIXL &#x2F; NVLink 等路径加速模型权重加载和新副本冷启动</td>
-</tr>
-<tr>
-<td>3. 拓扑准备</td>
-<td>GPU &#x2F; 网络拓扑感知</td>
-<td>多节点推理、P&#x2F;D 分离、TP&#x2F;EP 依赖 NVLink、IB&#x2F;RDMA、GPU 拓扑和节点亲和性</td>
-<td><code>hermes</code>、<code>llm-d-pd-utils</code>、LWS、DRA、Kubernetes 调度集成</td>
-<td><code>Grove</code>：network topology-aware gang scheduling &amp; autoscaling；Dynamo K8s deployment 集成拓扑感知能力</td>
-</tr>
-<tr>
-<td>4. 请求入口</td>
-<td>Gateway &#x2F; Frontend</td>
-<td>如何接收 OpenAI-compatible 请求，处理协议、租户上下文、路由元数据</td>
-<td>Gateway API、Inference Gateway、<code>llm-d-router</code></td>
-<td>Dynamo Frontend、Inference Gateway mode、Dynamo runtime frontend</td>
-</tr>
-<tr>
-<td>5. 请求路由</td>
-<td>LLM-aware routing</td>
-<td>请求应该发到哪个 replica、哪个 pool、哪个阶段的 worker</td>
-<td><code>llm-d-router</code>：load-aware、prefix-cache-aware、priority-aware、flow-control routing</td>
-<td>Dynamo Router &#x2F; KV Router：基于 worker load、cache hit、runtime metrics 做路由</td>
-</tr>
-<tr>
-<td>6. Prefix &#x2F; KV 感知</td>
-<td>KV-cache aware routing</td>
-<td>如何让请求尽量命中已有 prefix&#x2F;KV，减少重复 prefill，降低 TTFT</td>
-<td><code>llm-d-kv-cache</code> &#x2F; KV-cache indexer：维护全局 KV locality，为 Router 提供 cache score</td>
-<td>KVIndexer、KVPublisher、KV-aware routing、Dynamo Router</td>
-</tr>
-<tr>
-<td>7. KV 管理</td>
-<td>KV-cache lifecycle &#x2F; offload</td>
-<td>KV Cache 超出 GPU HBM 后如何管理、offload、复用、扩大工作集</td>
-<td>Advanced KV-cache management、tiered KV offloading、FS backend、GPU&#x2F;CPU&#x2F;Disk 层次化缓存</td>
-<td>KVBM：GPU → CPU → SSD → remote storage 的 KV block 管理与 offloading</td>
-</tr>
-<tr>
-<td>8. KV 传输</td>
-<td>KV transfer &#x2F; 数据移动</td>
-<td>P&#x2F;D 分离后，prefill 产生的 KV 如何低延迟传给 decode worker</td>
-<td>vLLM &#x2F; SGLang KV transfer 集成；NIXL &#x2F; UCCL backend；跨节点 cache coordination 方向</td>
-<td>NIXL：面向 GPU&#x2F;CPU&#x2F;storage 的低延迟数据传输层；支持 P&#x2F;D 场景下 KV cache movement</td>
-</tr>
-<tr>
-<td>9. P&#x2F;D 分离</td>
-<td>Prefill &#x2F; Decode disaggregation</td>
-<td>Prefill 和 Decode 资源特征不同，如何独立部署、独立扩缩、提升 GPU 利用率</td>
-<td>P&#x2F;D disaggregation guides、<code>llm-d-modelservice</code>、<code>coordinator</code>、Router&#x2F;EPP 分阶段调度</td>
-<td>Disaggregated Serving 是 Dynamo 三大核心性能技术之一；支持 prefill &#x2F; decode worker 分离和组合优化</td>
-</tr>
-<tr>
-<td>10. 多阶段推理</td>
-<td>Pipeline orchestration</td>
-<td>多模态 encode、prefill、decode、streaming、agentic 多轮等阶段如何编排</td>
-<td><code>coordinator</code>：Encode &#x2F; Prefill &#x2F; Decode pipeline 编排；通过阶段信息引导路由</td>
-<td>Dynamo graph &#x2F; disaggregated serving pipeline &#x2F; PrefillRouter</td>
-</tr>
-<tr>
-<td>11. 队列与流控</td>
-<td>Flow control &#x2F; backpressure</td>
-<td>高并发下如何控制排队、限流、优先级，避免尾延迟失控</td>
-<td><code>llm-d-router</code>：request priority、performance target、flow control；Operational Excellence</td>
-<td>Dynamo Router &#x2F; runtime 侧 load-aware routing、request rejection、worker load monitoring</td>
-</tr>
-<tr>
-<td>12. 延迟预测</td>
-<td>Latency-aware scheduling</td>
-<td>如何预测请求在不同 endpoint 上的 TTFT、ITL、总延迟，从而更优路由</td>
-<td><code>llm-d-latency-predictor</code>；predicted-latency based scheduling 方向</td>
-<td>Planner &#x2F; Profiler &#x2F; performance model；基于 workload profile 与 SLA 做容量和路由相关决策</td>
-</tr>
-<tr>
-<td>13. 扩缩容</td>
-<td>Autoscaling &#x2F; capacity planning</td>
-<td>多少副本、多少 prefill、多少 decode、如何满足 SLO 并降低成本</td>
-<td><code>llm-d-workload-variant-autoscaler</code>；scale-to-zero；saturation-based scaling；queue depth 与 KV pressure 信号</td>
-<td><code>Planner</code>：SLA-driven autoscaler，基于 profiling、workload、SLO right-size pools</td>
-</tr>
-<tr>
-<td>14. 多 variant 管理</td>
-<td>Workload variant &#x2F; serving shape</td>
-<td>同一模型可有不同 TP、batch、quantization、P&#x2F;D 比例、硬件类型，如何选择最优配置</td>
-<td>WVA、ModelService、InferencePool、Configuration Explorer</td>
-<td>Planner、AIConfigurator、Dynamo deployment config、自动生成优化配置</td>
-</tr>
-<tr>
-<td>15. Batch &#x2F; Async</td>
-<td>离线推理 &#x2F; 异步推理</td>
-<td>如何利用在线服务空闲容量处理分钟级 SLO 或批量任务</td>
-<td><code>llm-d-batch-gateway</code>、<code>llm-d-async</code>；Batch Processing 主线能力</td>
-<td>Dynamo 当前公开性能主线更聚焦 online &#x2F; disaggregated serving；可通过 Dynamo graph&#x2F;worker 承载部分批处理形态</td>
-</tr>
-<tr>
-<td>16. 多租户与 Adapter</td>
-<td>LoRA &#x2F; adapter-aware scheduling</td>
-<td>多租户、多 adapter 场景下如何避免重复加载和无效计算</td>
-<td>LoRA-aware prefix-cache scheduling；multi-tenant SaaS 场景 benchmark</td>
-<td>Dynamo 支持多 backend 和多 deployment，但公开性能主线更多围绕 KV、P&#x2F;D、offload、Planner</td>
-</tr>
-<tr>
-<td>17. Benchmark &#x2F; Profiler</td>
-<td>性能验证与复现</td>
-<td>如何复现实验、做参数扫描、发现瓶颈、验证 well-lit path</td>
-<td><code>llm-d-benchmark</code>、in-guide benchmark、Configuration Explorer、<code>llm-d-inference-sim</code>、<code>llm-d-prism</code></td>
-<td>AIPerf、Profiler、AIConfigurator、Dynamo recipes、DynoSim-style modeling</td>
-</tr>
-<tr>
-<td>18. 长上下文</td>
-<td>Working set &#x2F; context expansion</td>
-<td>长上下文、多轮对话会产生大量 KV，如何避免 HBM 成为硬上限</td>
-<td>hierarchical KV offloading、shared filesystem-backed KV tier、扩大有效 working set</td>
-<td>KVBM + KV offloading：将 KV 移到 host memory、local disk、remote storage，扩大上下文窗口</td>
-</tr>
-<tr>
-<td>19. Agentic workload</td>
-<td>多轮 &#x2F; 工具调用 &#x2F; 状态复用</td>
-<td>Agent 多轮请求中，历史上下文不断增长，如何复用 prefix&#x2F;KV 并降低重复 prefill</td>
-<td>KV-aware routing、async&#x2F;batch、未来 semantic caching &#x2F; pin critical context blocks 方向</td>
-<td>Dynamo agentic inference 叙事强调 frontend API、router、KV cache management 三层</td>
-</tr>
-<tr>
-<td>20. RL &#x2F; post-training 性能外延</td>
-<td>Rollout serving &#x2F; weight movement</td>
-<td>RL 训练中 rollout 生成、权重同步、GPU 空转、sampling 调度如何优化</td>
-<td><code>llm-d-rl</code>、<code>weight-propagation-interface</code>、<code>llm-d-rl-time-slicing</code>、<code>py-inference-scheduler</code></td>
-<td>Dynamo roadmap 中有 RL 方向；当前公开主线仍更集中在 serving、P&#x2F;D、KV、Planner、ModelExpress</td>
-</tr>
-</tbody></table>
-<hr>
-<h2 id="三、按业务流压缩后的问题地图"><a href="#三、按业务流压缩后的问题地图" class="headerlink" title="三、按业务流压缩后的问题地图"></a>三、按业务流压缩后的问题地图</h2><h3 id="阶段-1：服务准备"><a href="#阶段-1：服务准备" class="headerlink" title="阶段 1：服务准备"></a>阶段 1：服务准备</h3><p>核心问题是如何把一个大模型推理服务声明成平台可理解的对象。</p>
-<p>llm-d 侧重点：</p>
-<ul>
-<li>通过 <code>InferencePool</code>、ModelService、well-lit path guides，把模型服务、runtime、GPU 资源、Gateway 和调度策略组织起来；</li>
-<li>强调 Kubernetes-native 和跨硬件 accelerator 的可复现部署；</li>
-<li>通过 benchmark guides 验证部署路径的性能。</li>
-</ul>
-<p>Dynamo 侧重点：</p>
-<ul>
-<li>通过 Dynamo graph、Operator、CRDs、Helm 和 deployment recipes 定义分布式 inference 服务；</li>
-<li>将 disaggregated serving、KV offloading、Planner 等能力纳入统一 deployment 体系；</li>
-<li>更强调 datacenter-scale deployment 和 NVIDIA GPU fleet 上的性能闭环。</li>
-</ul>
-<hr>
-<h3 id="阶段-2：服务拉起与冷启动"><a href="#阶段-2：服务拉起与冷启动" class="headerlink" title="阶段 2：服务拉起与冷启动"></a>阶段 2：服务拉起与冷启动</h3><p>核心问题是大模型权重加载慢，导致扩容、替换、低频模型唤醒成本高。</p>
-<p>llm-d 侧重点：</p>
-<ul>
-<li><code>llm-d-fast-model-actuation</code> 关注 sleep&#x2F;wake、model swapping、快速实例切换；</li>
-<li>其价值主要体现在弹性伸缩和低频模型服务场景。</li>
-</ul>
-<p>Dynamo 侧重点：</p>
-<ul>
-<li><code>ModelExpress</code> 关注模型权重加载加速；</li>
-<li>通过 NIXL &#x2F; NVLink 等数据移动能力加快新 replica cold-start；</li>
-<li>和 Planner、autoscaling、deployment 形成更强的性能闭环。</li>
-</ul>
-<hr>
-<h3 id="阶段-3：请求进入与路由"><a href="#阶段-3：请求进入与路由" class="headerlink" title="阶段 3：请求进入与路由"></a>阶段 3：请求进入与路由</h3><p>核心问题是普通负载均衡无法理解 LLM 请求的计算特征和状态复用机会。</p>
-<p>llm-d 侧重点：</p>
-<ul>
-<li><code>llm-d-router</code> 是核心控制面；</li>
-<li>结合 load、KV locality、priority、performance target 做 endpoint selection；</li>
-<li>目标是替代普通 Kubernetes Service &#x2F; round-robin，形成 LLM-aware scheduling。</li>
-</ul>
-<p>Dynamo 侧重点：</p>
-<ul>
-<li>Dynamo Router &#x2F; KV Router 结合 worker load、cache hit、runtime metrics；</li>
-<li>与 KVBM、NIXL、disaggregated serving 深度联动；</li>
-<li>目标是同时优化 compute reuse、TTFT、throughput 和 GPU utilization。</li>
-</ul>
-<hr>
-<h3 id="阶段-4：KV-Cache-感知与管理"><a href="#阶段-4：KV-Cache-感知与管理" class="headerlink" title="阶段 4：KV Cache 感知与管理"></a>阶段 4：KV Cache 感知与管理</h3><p>核心问题是 KV Cache 既是性能优化的关键，也是长上下文和多轮对话的主要资源瓶颈。</p>
-<p>llm-d 侧重点：</p>
-<ul>
-<li><code>llm-d-kv-cache</code> &#x2F; KV-cache indexer 维护全局 KV locality；</li>
-<li>通过 cache-aware routing 减少重复 prefill；</li>
-<li>v0.5 引入 hierarchical KV offloading，使用 GPU、CPU、filesystem-backed disk tier 扩大 working set；</li>
-<li>强调 shared KV tier 可让新节点更快 hydrate cache，减少 warm-up。</li>
-</ul>
-<p>Dynamo 侧重点：</p>
-<ul>
-<li>KVBM 是更完整的 KV block 管理层；</li>
-<li>覆盖 GPU、CPU、SSD、remote storage 等多级存储；</li>
-<li>KV-aware routing、KV offloading 和 disaggregated serving 被官方定义为三大性能技术；</li>
-<li>NIXL 负责高效 KV cache movement。</li>
-</ul>
-<hr>
-<h3 id="阶段-5：P-D-分离与多阶段执行"><a href="#阶段-5：P-D-分离与多阶段执行" class="headerlink" title="阶段 5：P&#x2F;D 分离与多阶段执行"></a>阶段 5：P&#x2F;D 分离与多阶段执行</h3><p>核心问题是 prefill 和 decode 的资源特征不同，放在同一种 worker 上会导致利用率不佳。</p>
-<p>llm-d 侧重点：</p>
-<ul>
-<li>支持 P&#x2F;D disaggregation；</li>
-<li>通过 Router&#x2F;EPP、ModelService、coordinator 等能力组织 prefill&#x2F;decode worker；</li>
-<li><code>coordinator</code> 进一步探索 Encode &#x2F; Prefill &#x2F; Decode 多阶段 pipeline 编排。</li>
-</ul>
-<p>Dynamo 侧重点：</p>
-<ul>
-<li>Disaggregated Serving 是核心性能能力；</li>
-<li>通过 NIXL 将 prefill worker 生成的 KV 传给 decode worker；</li>
-<li>官方强调 P&#x2F;D、KV-aware routing、KV offloading 三者组合后存在性能叠加效应。</li>
-</ul>
-<hr>
-<h3 id="阶段-6：扩缩容与容量规划"><a href="#阶段-6：扩缩容与容量规划" class="headerlink" title="阶段 6：扩缩容与容量规划"></a>阶段 6：扩缩容与容量规划</h3><p>核心问题是普通 HPA 不能理解 LLM serving 的 SLO、KV pressure、P&#x2F;D 比例、variant 和硬件差异。</p>
-<p>llm-d 侧重点：</p>
-<ul>
-<li>WVA 关注 workload variant 层面的 autoscaling；</li>
-<li>v0.5 增加 scale-to-zero &#x2F; from-zero；</li>
-<li>saturation-based scaling 使用 queue depth 和 KV-cache pressure 等信号提前扩容。</li>
-</ul>
-<p>Dynamo 侧重点：</p>
-<ul>
-<li>Planner 是 SLA-driven autoscaler；</li>
-<li>基于 profiling、workload prediction、performance model 和 SLO right-size pools；</li>
-<li>AIConfigurator 用于快速搜索配置并生成 deployment config，减少手工 sweep。</li>
-</ul>
-<hr>
-<h3 id="阶段-7：性能验证与配置搜索"><a href="#阶段-7：性能验证与配置搜索" class="headerlink" title="阶段 7：性能验证与配置搜索"></a>阶段 7：性能验证与配置搜索</h3><p>核心问题是分布式推理系统参数空间巨大，如果没有 benchmark&#x2F;profiler，很难证明优化有效。</p>
-<p>llm-d 侧重点：</p>
-<ul>
-<li><code>llm-d-benchmark</code> 和 in-guide benchmark 支持 well-lit path 性能复现；</li>
-<li>Configuration Explorer 支持参数 sweep 和 memory-safe 配置探索；</li>
-<li><code>llm-d-inference-sim</code> 用于无 GPU 或轻量环境下模拟推理行为。</li>
-</ul>
-<p>Dynamo 侧重点：</p>
-<ul>
-<li>AIPerf 用于 benchmark；</li>
-<li>Profiler 和 AIConfigurator 用于性能建模与配置推荐；</li>
-<li>Dynamo 将配置搜索、deployment config、Planner 串成更自动化的性能工程链路。</li>
-</ul>
-<hr>
-<h2 id="四、一级问题域总结"><a href="#四、一级问题域总结" class="headerlink" title="四、一级问题域总结"></a>四、一级问题域总结</h2><p>如果抽象掉项目名，llm-d 和 Dynamo 在性能方向共同关注的问题可以归纳为以下 10 类。</p>
-<table>
-<thead>
-<tr>
-<th>一级问题域</th>
-<th>关注点</th>
-<th>llm-d 表现</th>
-<th>Dynamo 表现</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>服务抽象</td>
-<td>如何描述大模型服务、worker pool、variant、P&#x2F;D role</td>
-<td>InferencePool、ModelService、well-lit path</td>
-<td>Dynamo graph、CRD、Operator、deployment recipes</td>
-</tr>
-<tr>
-<td>请求调度</td>
-<td>如何把请求放到最合适的 worker</td>
-<td>Router&#x2F;EPP、load-aware、KV-aware、priority</td>
-<td>Router &#x2F; KV Router、worker metrics、cache hit</td>
-</tr>
-<tr>
-<td>KV 感知</td>
-<td>如何利用已有 prefix&#x2F;KV 降低 prefill</td>
-<td>KV-cache indexer、cache locality score</td>
-<td>KVIndexer、KVPublisher、KV-aware routing</td>
-</tr>
-<tr>
-<td>KV 管理</td>
-<td>如何扩大 KV 工作集并避免 HBM 限制</td>
-<td>hierarchical KV offloading、FS backend</td>
-<td>KVBM、GPU&#x2F;CPU&#x2F;SSD&#x2F;remote storage</td>
-</tr>
-<tr>
-<td>KV 传输</td>
-<td>P&#x2F;D 分离时如何移动 KV</td>
-<td>NIXL &#x2F; UCCL backend、runtime KV transfer 集成</td>
-<td>NIXL、non-blocking KV movement</td>
-</tr>
-<tr>
-<td>P&#x2F;D 分离</td>
-<td>prefill&#x2F;decode 如何独立部署和扩缩</td>
-<td>P&#x2F;D guides、ModelService、coordinator</td>
-<td>Disaggregated Serving、PrefillRouter、NIXL</td>
-</tr>
-<tr>
-<td>冷启动</td>
-<td>新副本如何快速可用</td>
-<td>FMA：sleep&#x2F;wake、model swapping</td>
-<td>ModelExpress：权重加载和 replica cold-start 加速</td>
-</tr>
-<tr>
-<td>扩缩容</td>
-<td>如何以 SLO&#x2F;成本&#x2F;资源为目标调容量</td>
-<td>WVA、scale-to-zero、KV pressure scaling</td>
-<td>Planner、SLA-driven autoscaling、AIConfigurator</td>
-</tr>
-<tr>
-<td>性能工程</td>
-<td>如何复现、调参、benchmark</td>
-<td>llm-d-benchmark、sim、prism、Configuration Explorer</td>
-<td>AIPerf、Profiler、AIConfigurator</td>
-</tr>
-<tr>
-<td>高级 workload</td>
-<td>Batch、Agentic、RL rollout 如何进入平台</td>
-<td>Batch Gateway、Async、llm-d-rl、WPI</td>
-<td>Agentic inference、Dynamo graph，RL 方向在 roadmap 中</td>
-</tr>
-</tbody></table>
-<hr>
-<h2 id="五、初步结论"><a href="#五、初步结论" class="headerlink" title="五、初步结论"></a>五、初步结论</h2><p>从性能视角看，llm-d 和 Dynamo 关注的问题高度重叠，但系统组织方式不同。</p>
-<p>llm-d 更强调：</p>
-<ul>
-<li>Kubernetes-native；</li>
-<li>Gateway &#x2F; EPP &#x2F; InferencePool；</li>
-<li>跨硬件 accelerator；</li>
-<li>well-lit path；</li>
-<li>通过 Router + KV locality + WVA 形成开放推理控制面；</li>
-<li>通过 incubation 扩展到 batch、RL、model actuation、multi-stage coordinator。</li>
-</ul>
-<p>Dynamo 更强调：</p>
-<ul>
-<li>datacenter-scale distributed inference runtime；</li>
-<li>Disaggregated Serving；</li>
-<li>KVBM；</li>
-<li>NIXL；</li>
-<li>ModelExpress；</li>
-<li>Planner；</li>
-<li>AIConfigurator &#x2F; Profiler；</li>
-<li>NVIDIA GPU fleet 上的数据移动、缓存管理、配置搜索和 SLA autoscaling 闭环。</li>
-</ul>
-<p>如果只从性能主线抽象，两者都在围绕同一个核心目标展开：</p>
-<blockquote>
-<p>通过请求调度、KV 状态复用、P&#x2F;D 分离、KV offloading、低延迟数据移动、冷启动加速、SLO-aware autoscaling 和可复现性能工程，提高大模型推理系统的 TTFT、ITL、throughput、GPU 利用率和单位成本效率。</p>
-</blockquote>
-<p>因此，后续分析不应先问“哪个项目更好”，而应继续拆解：</p>
-<ol>
-<li>它们如何建模请求；</li>
-<li>它们如何建模 KV 状态；</li>
-<li>它们如何建模 worker &#x2F; variant &#x2F; topology；</li>
-<li>它们如何把 routing、KV、P&#x2F;D、autoscaling 串成闭环；</li>
-<li>它们哪些能力已经进入主线，哪些仍在 incubation &#x2F; roadmap &#x2F; experimental 阶段。</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://vanderchen.github.io/2026/06/30/inference-robot/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -653,7 +205,7 @@
       </span>
       <span class="post-meta-item-text">Posted on</span>
 
-      <time title="Created: 2026-06-30 13:12:52" itemprop="dateCreated datePublished" datetime="2026-06-30T13:12:52+00:00">2026-06-30</time>
+      <time title="Created: 2026-06-30 14:19:01" itemprop="dateCreated datePublished" datetime="2026-06-30T14:19:01+00:00">2026-06-30</time>
     </span>
 
   
@@ -666,416 +218,91 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="一、分析口径"><a href="#一、分析口径" class="headerlink" title="一、分析口径"></a>一、分析口径</h2><p>本文只从<strong>可靠性视角</strong>整理 llm-d 与 NVIDIA Dynamo &#x2F; ai-dynamo 生态中公开呈现的能力，不做选型判断，也暂不讨论差异化。</p>
-<p>可靠性在大模型推理系统中不仅包括传统的 Pod 重启、健康检查和负载均衡，还包括：</p>
-<ul>
-<li>Router &#x2F; Gateway 高可用；</li>
-<li>Endpoint 健康感知；</li>
-<li>Worker graceful shutdown；</li>
-<li>in-flight request 处理；</li>
-<li>request migration；</li>
-<li>request cancellation；</li>
-<li>load shedding；</li>
-<li>engine process failover；</li>
-<li>GPU &#x2F; node 故障恢复；</li>
-<li>KV cache 在恢复过程中的角色；</li>
-<li>P&#x2F;D 分离下的跨阶段恢复；</li>
-<li>滚动升级与容量恢复；</li>
-<li>基础设施 HA；</li>
-<li>故障测试与验证。</li>
-</ul>
-<p>为避免混淆，本文将能力状态分为四类：</p>
-<table>
-<thead>
-<tr>
-<th>状态</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>主线 &#x2F; 文档化</td>
-<td>官方 README、docs、user guide 中明确作为能力说明</td>
-</tr>
-<tr>
-<td>Issue &#x2F; Proposal</td>
-<td>公开 issue 或提案，方向明确，但不等同于成熟落地</td>
-</tr>
-<tr>
-<td>Experimental &#x2F; Preview</td>
-<td>官方明确标为实验或预览能力</td>
-</tr>
-<tr>
-<td>基础依赖</td>
-<td>更多依赖 Kubernetes、Gateway、runtime 或底层组件，而不是该项目独立实现</td>
-</tr>
-</tbody></table>
-<hr>
-<h2 id="二、可靠性能力总表"><a href="#二、可靠性能力总表" class="headerlink" title="二、可靠性能力总表"></a>二、可靠性能力总表</h2><table>
-<thead>
-<tr>
-<th>核心问题域</th>
-<th>要解决的问题</th>
-<th>llm-d 相关能力 &#x2F; 项目</th>
-<th>Dynamo &#x2F; NVIDIA 相关能力 &#x2F; 项目</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>控制面 &#x2F; 入口高可用</td>
-<td>Router、Frontend、Gateway 自身不能成为单点，入口组件故障后流量应继续可用</td>
-<td>llm-d 以 Gateway API、Envoy、EPP、InferencePool 为基础；Router 作为智能入口，结合 endpoint 状态做请求放置；v0.5 中提到 active-active HA</td>
-<td>Dynamo 文档提到可启动多个 frontend + router replica，并共享 router state 以提高 fault tolerance；Fault Tolerance 总览也覆盖 system &#x2F; infrastructure 层</td>
-</tr>
-<tr>
-<td>Endpoint 健康感知</td>
-<td>Router 需要识别 unhealthy、stale、overloaded worker，避免继续转发请求</td>
-<td><code>llm-d-router</code> 的 EPP 根据 InferencePool 当前状态、load、KV locality、priority 等信号做 placement decision；更多属于 routing &#x2F; flow-control 基础能力</td>
-<td>Dynamo Fault Tolerance 把 Health Checks 放在 Worker 层；整体架构中包含 health checks、discovery liveness、stale endpoint removal</td>
-</tr>
-<tr>
-<td>Discovery &#x2F; Membership 可靠性</td>
-<td>Worker 上下线、失联、租约过期后，系统如何更新成员视图，避免 stale endpoint</td>
-<td>主要依赖 Kubernetes endpoint、Gateway API、InferencePool &#x2F; EPP 机制；公开资料中未看到单独 membership fault-tolerance 章节</td>
-<td>Dynamo resilience loop 明确包含 discovery liveness、stale endpoint removal、event-path recovery</td>
-</tr>
-<tr>
-<td>Graceful Shutdown &#x2F; Drain</td>
-<td>滚动升级、缩容、Pod 终止时，不应继续接收新请求，并尽量让 in-flight 请求完成</td>
-<td>llm-d issue #927 提议采用 vLLM <code>--shutdown-timeout</code>，并设置 <code>terminationGracePeriodSeconds</code> 大于 shutdown timeout，以减少升级期间流量中断、允许 in-flight request 完成</td>
-<td>Dynamo 有专门 Graceful Shutdown 文档：收到 SIGTERM &#x2F; SIGINT 后调用 <code>runtime.shutdown()</code>，invalidates endpoints，不再接收新请求，并按配置等待 in-flight requests 完成和清理资源</td>
-</tr>
-<tr>
-<td>In-flight Request Completion</td>
-<td>Worker 退出时，已有请求是等待完成、取消、迁移，还是直接失败</td>
-<td>llm-d graceful shutdown issue 的目标是通过 vLLM shutdown timeout 让 in-flight 请求完成；公开主线未看到成熟 request migration &#x2F; cancellation 策略</td>
-<td>Dynamo graceful shutdown 支持 endpoint draining，并根据配置处理 in-flight requests；Fault Tolerance 总览把 graceful shutdown、request migration、request cancellation 作为关键机制</td>
-</tr>
-<tr>
-<td>Request Migration &#x2F; 故障续推</td>
-<td>Worker 在生成中故障时，请求能否迁移到其他 worker 并继续输出</td>
-<td>公开主线主要是 routing、flow control、HA、resilient transport、graceful shutdown issue；未看到等价于 Dynamo request migration 的文档化能力</td>
-<td>Dynamo Request Migration 允许 in-progress requests 在 worker 不可用时迁移到健康 worker，保留 accumulated tokens，并保持 client token flow 连续</td>
-</tr>
-<tr>
-<td>Request Cancellation</td>
-<td>用户断开连接、请求超时或上游取消后，如何释放 worker 计算资源</td>
-<td>公开资料中未看到 llm-d 层的一等 request cancellation 机制；通常依赖 Gateway &#x2F; runtime 行为</td>
-<td>Dynamo Request Cancellation 支持 graceful stop、kill signal、hierarchical cancellation propagation；vLLM backend 文档也说明用户断开连接时请求会跨 worker 自动取消以释放资源</td>
-</tr>
-<tr>
-<td>Load Shedding &#x2F; Request Rejection</td>
-<td>Worker 或系统过载时，如何拒绝新请求，防止级联故障、OOM 和尾延迟崩溃</td>
-<td>llm-d Router 提供 request prioritization 和 advanced flow control；v0.5 也提到 operational rigor、availability requirements，但公开材料更偏调度 &#x2F; SLO</td>
-<td>Dynamo Request Rejection &#x2F; Load Shedding 基于 KV cache utilization、prefill token threshold、worker load monitoring 等阈值，过载时返回 HTTP 503，目标是防止 cascading failures</td>
-</tr>
-<tr>
-<td>Priority &#x2F; Degradation</td>
-<td>不同租户或请求优先级不同，故障或过载时如何降级、排队或拒绝</td>
-<td><code>llm-d-router</code> 支持 request prioritization、flow control，并可通过 objective &#x2F; target 影响 placement</td>
-<td>Dynamo 文档主要从 load shedding、worker load、HTTP 503、migration &#x2F; cancellation 角度描述；优先级策略不是其公开 fault-tolerance 叙事核心</td>
-</tr>
-<tr>
-<td>Worker Crash Recovery</td>
-<td>Worker crash、pod restart、runtime 异常后，如何摘流、替换、恢复服务</td>
-<td>基础上依赖 K8s restart &#x2F; endpoint 更新 &#x2F; Router 重新放置；IRO proposal 面向硬件故障恢复提出 RecoveryRequest 与 EngineAdapter</td>
-<td>Dynamo Fault Tolerance 明确覆盖 Worker Pod Restart、Worker Crash、Network Partition、GPU Failure 等 failure scenarios；机制包括 health checks、migration、cancellation、load shedding</td>
-</tr>
-<tr>
-<td>Engine Process Failover</td>
-<td>GPU &#x2F; 节点仍健康，但 backend engine 进程崩溃时，能否快速恢复而非完整重载</td>
-<td>IRO proposal 通过 EngineAdapter 抽象 pause &#x2F; resume、scale down &#x2F; up、engine status 等操作；更偏硬件 &#x2F; engine recovery 协调</td>
-<td>Shadow Engine Failover 是 Kubernetes 中同节点 engine-process failure 的 active&#x2F;passive 恢复机制，目标是在 GPU &#x2F; node 健康、engine 失败时由 standby engine 接管；属于 Experimental &#x2F; Preview</td>
-</tr>
-<tr>
-<td>硬件故障恢复</td>
-<td>GPU reset、node reboot、node replacement 等硬件故障如何与推理服务生命周期协同</td>
-<td>IRO issue 明确提出 RESET_DEVICE、REBOOT_NODE、REPLACE_NODE 三条恢复轨道，并通过 RecoveryRequest CRD 与 EngineAdapter 协调 engine recovery</td>
-<td>Dynamo Fault Tolerance failure scenarios 包含 GPU Failure；此外依赖 Kubernetes、Grove、底层 NVIDIA 平台能力和 Shadow Engine Failover 等机制</td>
-</tr>
-<tr>
-<td>网络 &#x2F; 传输韧性</td>
-<td>网络拥塞、传输不稳定会导致 P&#x2F;D KV transfer 或跨节点通信尾延迟波动</td>
-<td>llm-d v0.5 提到 UCCL-based transport resilience；UCCL transport backend 用于提升拥塞网络下稳定性</td>
-<td>Dynamo 依赖 NIXL 做跨 worker &#x2F; GPU &#x2F; CPU &#x2F; storage 数据移动；Fault Tolerance 还把 NATS resilience、etcd HA 放到基础设施层</td>
-</tr>
-<tr>
-<td>KV Cache 在可靠性中的角色</td>
-<td>KV 不只是性能缓存；故障时是否能用于恢复、迁移或减少重算</td>
-<td>公开主线更偏性能：KV locality、offloading、cache-aware routing；未看到成熟 KV-state recovery 语义</td>
-<td>Dynamo load shedding 使用 KV cache utilization 作为 busy threshold；request migration 保留 accumulated tokens，但公开文档未表述为完整 KV block ownership &#x2F; replica &#x2F; epoch 级恢复</td>
-</tr>
-<tr>
-<td>P&#x2F;D 分离下的故障处理</td>
-<td>Prefill 成功但 decode 失败、KV transfer 失败、decode worker 下线时，如何恢复请求</td>
-<td>llm-d 有 P&#x2F;D disaggregation 与 coordinator，但可靠性公开叙事未单独展开 P&#x2F;D phase-aware recovery</td>
-<td>Dynamo request migration、graceful shutdown、request cancellation 覆盖 worker &#x2F; request 层；vLLM backend 支持 request migration 配置，但 P&#x2F;D phase-aware recovery 不是公开文档中的单独主题</td>
-</tr>
-<tr>
-<td>Rolling Upgrade &#x2F; ModelService 升级</td>
-<td>模型服务升级期间如何尽量不中断用户请求</td>
-<td>llm-d #927 明确目标是 graceful ModelService upgrades，配置 vLLM <code>--shutdown-timeout</code> 和 K8s <code>terminationGracePeriodSeconds</code></td>
-<td>Dynamo Graceful Shutdown 服务于 Kubernetes pod termination、endpoint invalidation、in-flight wait、clean pod restart</td>
-</tr>
-<tr>
-<td>Capacity Restoration &#x2F; 故障后补容量</td>
-<td>Worker 下线或故障后，如何补容量、防止幸存节点过载</td>
-<td>llm-d 有 autoscaling、scale-to-zero、flow control；IRO proposal 中 REPLACE_NODE 会 scale down &#x2F; replace &#x2F; scale up，但 capacity restoration 没有形成独立文档化闭环</td>
-<td>Dynamo Planner 负责容量规划，Fault Tolerance 通过 load shedding 防止过载；但公开 fault tolerance 文档更强调请求 &#x2F; worker 恢复与拒绝，未把 recovery-aware autoscaling 单独展开</td>
-</tr>
-<tr>
-<td>Infrastructure HA</td>
-<td>etcd、NATS、service discovery、event path 等基础组件故障如何处理</td>
-<td>更多依赖 Kubernetes、Gateway、Envoy、KServe 等生态 HA 能力；v0.5 提到 active-active HA</td>
-<td>Dynamo Fault Tolerance 表中明确 infrastructure 层包括 etcd HA 与 NATS resilience</td>
-</tr>
-<tr>
-<td>故障测试 &#x2F; 验证</td>
-<td>可靠性能力是否有测试框架验证，而不是只在文档中描述</td>
-<td><code>llm-d-benchmark</code> 主要关注部署、实验执行、数据采集和 teardown；可靠性 chaos &#x2F; fault testing 公开主线不突出</td>
-<td>Dynamo 有 Fault Tolerance Testing 文档，测试框架支持 request cancellation 等 fault tolerance mechanisms</td>
-</tr>
-<tr>
-<td>可靠性文档体系</td>
-<td>是否把可靠性作为系统级一等能力组织，而不是散落在 issue &#x2F; runtime &#x2F; K8s 配置中</td>
-<td>llm-d 可靠性内容较分散：production、resilience、HA、UCCL、graceful shutdown issue、IRO proposal 等分别出现</td>
-<td>Dynamo 有独立 Fault Tolerance 章节，并按 Request、Worker、Engine Process、System、Infrastructure 分层组织</td>
-</tr>
-</tbody></table>
-<hr>
-<h2 id="三、按可靠性层次归纳"><a href="#三、按可靠性层次归纳" class="headerlink" title="三、按可靠性层次归纳"></a>三、按可靠性层次归纳</h2><h3 id="1-流量级可靠性"><a href="#1-流量级可靠性" class="headerlink" title="1. 流量级可靠性"></a>1. 流量级可靠性</h3><p>这一层解决的是：</p>
-<blockquote>
-<p>不要把请求继续打到坏节点或过载节点。</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>能力</th>
-<th>llm-d</th>
-<th>Dynamo</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>健康感知</td>
-<td>Router &#x2F; EPP 基于 InferencePool 状态和实时信号做 placement</td>
-<td>Health Checks、Discovery Liveness、stale endpoint removal</td>
-</tr>
-<tr>
-<td>负载保护</td>
-<td>Router 支持 prioritization 和 advanced flow control</td>
-<td>Request Rejection &#x2F; Load Shedding，基于 KV utilization、prefill token 等阈值返回 503</td>
-</tr>
-<tr>
-<td>入口 HA</td>
-<td>v0.5 提到 active-active HA</td>
-<td>多 frontend + router replica，共享 router state</td>
-</tr>
-</tbody></table>
-<p>初步判断：</p>
-<ul>
-<li>两边都有流量级可靠性能力；</li>
-<li>Dynamo 的 fault-tolerance 文档化更完整；</li>
-<li>llm-d 更像是把这些能力分散在 Router、HA、transport、K8s integration 中。</li>
-</ul>
-<hr>
-<h3 id="2-Worker-生命周期可靠性"><a href="#2-Worker-生命周期可靠性" class="headerlink" title="2. Worker 生命周期可靠性"></a>2. Worker 生命周期可靠性</h3><p>这一层解决的是：</p>
-<blockquote>
-<p>Pod 升级、缩容、退出、crash 时，系统如何优雅处理。</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>能力</th>
-<th>llm-d</th>
-<th>Dynamo</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Graceful shutdown</td>
-<td>issue #927：计划采用 vLLM <code>--shutdown-timeout</code>，配合 <code>terminationGracePeriodSeconds</code></td>
-<td>专门文档：SIGTERM &#x2F; SIGINT → endpoint invalidation → 等待 in-flight → cleanup</td>
-</tr>
-<tr>
-<td>Rolling upgrade</td>
-<td>通过 graceful ModelService upgrade issue 推进</td>
-<td>Graceful shutdown 明确覆盖 Kubernetes pod termination 和 clean restart</td>
-</tr>
-<tr>
-<td>Worker crash</td>
-<td>依赖 K8s + Router&#x2F;EPP + IRO proposal</td>
-<td>Fault Tolerance 明确覆盖 worker crash、pod restart、network partition、GPU failure</td>
-</tr>
-</tbody></table>
-<p>初步判断：</p>
-<ul>
-<li>Dynamo 已经做成用户指南；</li>
-<li>llm-d 正在通过 issue &#x2F; proposal 补齐；</li>
-<li>llm-d 当前更依赖 Kubernetes 与 runtime 的基础语义。</li>
-</ul>
-<hr>
-<h3 id="3-请求级可靠性"><a href="#3-请求级可靠性" class="headerlink" title="3. 请求级可靠性"></a>3. 请求级可靠性</h3><p>这一层解决的是：</p>
-<blockquote>
-<p>请求已经在生成中，故障或取消时怎么办。</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>能力</th>
-<th>llm-d</th>
-<th>Dynamo</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Request migration</td>
-<td>未看到成熟主线能力</td>
-<td>已有 Request Migration：保留 accumulated tokens，迁移到健康 worker 继续生成</td>
-</tr>
-<tr>
-<td>Request cancellation</td>
-<td>未看到独立主线能力</td>
-<td>已有 Request Cancellation：支持层级取消传播，用户断连时跨 worker 取消</td>
-</tr>
-<tr>
-<td>In-flight handling</td>
-<td>主要通过 graceful shutdown issue 依赖 vLLM shutdown timeout</td>
-<td>Fault Tolerance 明确把 migration、cancellation、graceful shutdown 组合起来处理</td>
-</tr>
-</tbody></table>
-<p>初步判断：</p>
-<ul>
-<li>Dynamo 在请求级可靠性上更系统；</li>
-<li>需要注意 Dynamo request migration 公开语义主要是 accumulated-token continuation；</li>
-<li>这不应直接等同于完整 KV-state 接管。</li>
-</ul>
-<hr>
-<h3 id="4-Engine-硬件恢复"><a href="#4-Engine-硬件恢复" class="headerlink" title="4. Engine &#x2F; 硬件恢复"></a>4. Engine &#x2F; 硬件恢复</h3><p>这一层解决的是：</p>
-<blockquote>
-<p>engine process、GPU、node 发生故障时如何恢复服务能力。</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>能力</th>
-<th>llm-d</th>
-<th>Dynamo</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Engine process failover</td>
-<td>IRO proposal 通过 EngineAdapter 抽象 pause &#x2F; resume、scale down &#x2F; up</td>
-<td>Shadow Engine Failover，作为 Engine Process 层机制，被列入 Fault Tolerance</td>
-</tr>
-<tr>
-<td>GPU reset &#x2F; node reboot &#x2F; node replacement</td>
-<td>IRO proposal 明确 RESET_DEVICE、REBOOT_NODE、REPLACE_NODE 三条恢复轨道</td>
-<td>Fault Tolerance failure scenarios 包含 GPU Failure；Shadow Engine Failover 覆盖同节点 engine-process failure</td>
-</tr>
-<tr>
-<td>硬件恢复编排</td>
-<td>IRO 通过 RecoveryRequest CRD 与 infrastructure recovery controller 协同</td>
-<td>依赖 Dynamo + Kubernetes + NVIDIA 平台能力</td>
-</tr>
-</tbody></table>
-<p>初步判断：</p>
-<ul>
-<li>llm-d 在硬件故障恢复方向有明确 proposal；</li>
-<li>Dynamo 已有更完整的 fault-tolerance 叙事，并有 experimental &#x2F; preview 的 Shadow Engine Failover；</li>
-<li>两者都在把 engine &#x2F; hardware failure 从普通 Pod 重启提升为平台级恢复问题。</li>
-</ul>
-<hr>
-<h3 id="5-状态级可靠性"><a href="#5-状态级可靠性" class="headerlink" title="5. 状态级可靠性"></a>5. 状态级可靠性</h3><p>这一层解决的是：</p>
-<blockquote>
-<p>KV、token、sequence state 这些推理状态能否参与恢复。</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>状态</th>
-<th>llm-d</th>
-<th>Dynamo</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Token state</td>
-<td>未看到主线 request migration 语义</td>
-<td>Request Migration 保留 accumulated tokens</td>
-</tr>
-<tr>
-<td>KV state</td>
-<td>公开材料主要用于性能：KV locality、offloading、cache-aware routing</td>
-<td>KV utilization 用于 load shedding；KVBM 偏性能管理；公开 migration 未表述为 KV block 级恢复</td>
-</tr>
-<tr>
-<td>Sequence state</td>
-<td>未看到成熟公开能力</td>
-<td>Request migration 有 partial generation state，但更像 token-level continuation</td>
-</tr>
-</tbody></table>
-<p>初步判断：</p>
-<ul>
-<li>Dynamo 已经有请求级迁移能力；</li>
-<li>但公开资料不应解读为完整 KV-state-aware recovery；</li>
-<li>llm-d 公开主线也没有把 KV 状态恢复做成成熟可靠性能力；</li>
-<li>状态级可靠性是目前两者公开材料中都需要谨慎表述的部分。</li>
-</ul>
-<hr>
-<h2 id="四、事实底图总结"><a href="#四、事实底图总结" class="headerlink" title="四、事实底图总结"></a>四、事实底图总结</h2><p>从可靠性角度看，两大系统的公开侧重点不同。</p>
-<h3 id="llm-d"><a href="#llm-d" class="headerlink" title="llm-d"></a>llm-d</h3><p>llm-d 的可靠性能力存在，但整体较分散，主要体现在：</p>
-<ul>
-<li>Router &#x2F; EPP 的 endpoint 状态感知；</li>
-<li>request prioritization；</li>
-<li>advanced flow control；</li>
-<li>active-active HA；</li>
-<li>UCCL-based transport resilience；</li>
-<li>graceful shutdown &#x2F; graceful ModelService upgrade issue；</li>
-<li>Inference Resilience Operator proposal；</li>
-<li>Kubernetes &#x2F; Gateway &#x2F; runtime 基础可靠性能力。</li>
-</ul>
-<p>可以概括为：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">llm-d：</span><br><span class="line">  可靠性能力存在，但更分散在 Router、HA、transport、graceful shutdown issue、IRO proposal 中；</span><br><span class="line">  公开主线仍主要围绕性能、调度、KV、P/D、autoscaling 和 production hardening。</span><br></pre></td></tr></table></figure>
+          <p>从可靠性视角对照 llm-d 与 NVIDIA Dynamo 在高可用、故障恢复和流量治理方面的能力。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/06/30/inference-robot/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
 
-<h3 id="Dynamo-NVIDIA"><a href="#Dynamo-NVIDIA" class="headerlink" title="Dynamo &#x2F; NVIDIA"></a>Dynamo &#x2F; NVIDIA</h3><p>Dynamo 的可靠性体系更显性，已经有独立 Fault Tolerance 文档，并按层次组织：</p>
-<ul>
-<li>Request；</li>
-<li>Worker；</li>
-<li>Engine Process；</li>
-<li>System；</li>
-<li>Infrastructure。</li>
-</ul>
-<p>公开覆盖的能力包括：</p>
-<ul>
-<li>request migration；</li>
-<li>request cancellation；</li>
-<li>graceful shutdown；</li>
-<li>request rejection &#x2F; load shedding；</li>
-<li>health checks；</li>
-<li>stale endpoint removal；</li>
-<li>shadow engine failover；</li>
-<li>etcd HA；</li>
-<li>NATS resilience；</li>
-<li>fault tolerance testing。</li>
-</ul>
-<p>可以概括为：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Dynamo：</span><br><span class="line">  可靠性已经是一等文档主题；</span><br><span class="line">  覆盖流量级、请求级、worker 生命周期、engine process 和基础设施层；</span><br><span class="line">  但公开资料中仍需区分 token-level request migration 与完整 KV-state-level recovery。</span><br></pre></td></tr></table></figure>
+    
+    
+    
 
-<hr>
-<h2 id="五、当前可确认的边界"><a href="#五、当前可确认的边界" class="headerlink" title="五、当前可确认的边界"></a>五、当前可确认的边界</h2><p>为了保证汇报真实可靠，建议在材料中避免以下表述：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">错误表述：</span><br><span class="line">  llm-d 和 Dynamo 主要关注性能，没有做可靠性。</span><br></pre></td></tr></table></figure>
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
 
-<p>更稳妥的表述是：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">更准确表述：</span><br><span class="line">  llm-d 和 Dynamo 都已经开始覆盖生产级可靠性能力。</span><br><span class="line">  Dynamo 尤其将 Fault Tolerance 作为一等文档主题，覆盖 request migration、request cancellation、graceful shutdown、load shedding、health checks 和 engine-process failover 等能力。</span><br><span class="line">  llm-d 的可靠性能力则更分散，主要体现在 Router/EPP flow control、active-active HA、transport resilience、graceful shutdown issue 和 IRO 硬件故障恢复 proposal 中。</span><br><span class="line">  两者公开材料中都需要谨慎区分请求级恢复与完整 KV-state-level recovery。</span><br></pre></td></tr></table></figure>
 
-<hr>
-<h2 id="六、后续继续分析的问题"><a href="#六、后续继续分析的问题" class="headerlink" title="六、后续继续分析的问题"></a>六、后续继续分析的问题</h2><p>如果后续要进一步深入，可以继续按以下问题核对：</p>
-<ol>
-<li>Dynamo request migration 是否只是 token-level continuation，还是支持真正的 KV &#x2F; sequence state migration；</li>
-<li>Dynamo Shadow Engine Failover 是否能覆盖 in-flight request，还是主要覆盖 model weights &#x2F; engine process；</li>
-<li>llm-d IRO proposal 是否进入实现阶段，是否已有 controller &#x2F; CRD &#x2F; EngineAdapter 实现；</li>
-<li>llm-d graceful shutdown issue 是否合入主线，ModelService Helm chart 是否已支持相关配置；</li>
-<li>llm-d active-active HA 覆盖的是 Router &#x2F; control-plane HA，还是包括请求状态级 HA；</li>
-<li>两者是否有 P&#x2F;D phase-aware recovery 的明确状态机；</li>
-<li>两者是否把 recovery-aware autoscaling 与 fault tolerance 联动起来；</li>
-<li>两者是否有针对 fault injection &#x2F; chaos testing 的 benchmark 或 e2e 测试体系。</li>
-</ol>
 
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://vanderchen.github.io/2026/06/30/inference-profiling/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://github.com/VanderChen/picbed/raw/main/blog/profile.png">
+      <meta itemprop="name" content="Vander Chen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Vander's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | Vander's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/06/30/inference-profiling/" class="post-title-link" itemprop="url">llm-d 与 NVIDIA Dynamo 性能能力对照总表</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-06-30 14:19:01" itemprop="dateCreated datePublished" datetime="2026-06-30T14:19:01+00:00">2026-06-30</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>从推理服务生命周期角度整理 llm-d 与 NVIDIA Dynamo 在性能方向的公开能力。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/06/30/inference-profiling/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1137,7 +364,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-06-30 13:12:52" itemprop="dateModified" datetime="2026-06-30T13:12:52+00:00">2026-06-30</time>
+      <time title="Modified: 2026-06-30 14:19:01" itemprop="dateModified" datetime="2026-06-30T14:19:01+00:00">2026-06-30</time>
     </span>
 
   
@@ -1150,95 +377,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="Survey"><a href="#Survey" class="headerlink" title="Survey"></a>Survey</h2><ul>
-<li><input disabled="" type="checkbox"> Training and Serving System of Foundation Models: A Comprehensive Survey</li>
-</ul>
-<h2 id="Training"><a href="#Training" class="headerlink" title="Training"></a>Training</h2><h3 id="System-Architecture"><a href="#System-Architecture" class="headerlink" title="System Architecture"></a>System Architecture</h3><ul>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘24</strong> MegaScale: Scaling Large Language Model Training to More Than 10,000 GPUs</li>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘24</strong> Resiliency at Scale: Managing Google’s TPUv4 Machine Learning Supercomputer</li>
-<li><input disabled="" type="checkbox"> <strong>SOSP ‘23</strong> Oobleck: Resilient Distributed Training of Large Models Using Pipeline Templates</li>
-</ul>
-<h3 id="Parallelism-Communication"><a href="#Parallelism-Communication" class="headerlink" title="Parallelism &amp; Communication"></a>Parallelism &amp; Communication</h3><ul>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> TopoOpt: Co-optimizing Network Topology and Parallelization Strategy for Distributed Training Jobs</li>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> TACCL: Guiding Collective Algorithm Synthesis using Communication Sketches</li>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> Better Together: Jointly Optimizing ML Collective Scheduling and Execution Planning using SYNDICATE</li>
-<li><input disabled="" type="checkbox"> <strong>SIGCOMM ‘24</strong> Rethinking Machine Learning Collective Communication as a Multi-Commodity Flow Problem</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘23</strong> Overlap Communication with Dependent Computation via Decomposition in Large Deep Learning Models</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘23</strong> In-Network Aggregation with Transport Transparency for Distributed Training</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> Centauri: Enabling Efficient Scheduling for Communication-Computation Overlap in Large Model Training via Communication Partitioning</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> AdaPipe: Optimizing Pipeline Parallelism with Adaptive Recomputation and Partitioning</li>
-</ul>
-<h3 id="Resource-Management-Scheduling"><a href="#Resource-Management-Scheduling" class="headerlink" title="Resource Management &amp; Scheduling"></a>Resource Management &amp; Scheduling</h3><ul>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> Bamboo: Making Preemptible Instances Resilient for Affordable Training of Large DNNs</li>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> Transparent GPU Sharing in Container Clouds for Deep Learning Workloads</li>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> Shockwave: Fair and Efficient Cluster Scheduling for Dynamic Adaptation in Machine Learning</li>
-<li><input disabled="" type="checkbox"> <strong>SOSP ‘23</strong> Sia: Heterogeneity-aware, goodput-optimized ML-cluster scheduling</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘23</strong> Snape: Reliable and Low-Cost Computing with Mixture of Spot and On-demand VMs</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘23</strong> Lucid: A Non-Intrusive, Scalable and Interpretable Scheduler for Deep Learning Training Jobs</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘23</strong> ElasticFlow: An Elastic Serverless Training Platform for Distributed Deep Learning</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> Heet: Accelerating Elastic Training in Heterogeneous Deep Learning Clusters</li>
-<li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> MAST: Global Scheduling of ML Training across Geo-Distributed Datacenters at Hyperscale</li>
-</ul>
-<h3 id="Job-Analysis-Optimization"><a href="#Job-Analysis-Optimization" class="headerlink" title="Job Analysis &amp; Optimization"></a>Job Analysis &amp; Optimization</h3><ul>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘24</strong> Characterization of Large Language Model Development in the Datacenter</li>
-<li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> When will my ML Job finish? Toward providing Completion Time Estimates through Predictability-Centric Scheduling</li>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> ModelKeeper: Accelerating DNN Training via Automated Training Warmup</li>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> BGL: GPU-Efficient GNN Training by Optimizing Graph Data I&#x2F;O and Preprocessing</li>
-<li><input disabled="" type="checkbox"> <strong>SIGCOMM ‘23</strong> anus: A Unified Distributed Training Framework for Sparse Mixture-of-Experts Models</li>
-</ul>
-<h3 id="Failure-Recovery"><a href="#Failure-Recovery" class="headerlink" title="Failure Recovery"></a>Failure Recovery</h3><ul>
-<li><input disabled="" type="checkbox"> <strong>SOSP ‘23</strong> GEMINI: Fast Failure Recovery in Distributed Training with In-Memory Checkpoints</li>
-</ul>
-<h2 id="Serving"><a href="#Serving" class="headerlink" title="Serving"></a>Serving</h2><h3 id="System-Architecture-1"><a href="#System-Architecture-1" class="headerlink" title="System Architecture"></a>System Architecture</h3><ul>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘23</strong> SHEPHERD: Serving DNNs in the Wild</li>
-<li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> Taming Throughput-Latency Tradeoff in LLM Inference with Sarathi-Serve</li>
-<li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> ServerlessLLM: Low-Latency Serverless Inference for Large Language Models</li>
-<li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> InfiniGen: Efficient Generative Inference of Large Language Models with Dynamic KV Cache Management</li>
-<li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving</li>
-<li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> Llumnix: Dynamic Scheduling for Large Language Model Serving</li>
-</ul>
-<h3 id="Resource-Management-Optimization"><a href="#Resource-Management-Optimization" class="headerlink" title="Resource Management &amp; Optimization"></a>Resource Management &amp; Optimization</h3><ul>
-<li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> USHER: Holistic Interference Avoidance for Resource Optimized ML Inference</li>
-<li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> Fairness in Serving Large Language Models</li>
-<li><input disabled="" type="checkbox"> <strong>OSDI ‘24</strong> dLoRA: Dynamically Orchestrating Requests and Adapters for LoRA LLM Serving</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> ExeGPT: Constraint-Aware Resource Allocator for LLM Inference</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> Proteus: A High-Throughput Inference-Serving System with Accuracy Scaling</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> SpotServe: Serving Generative Large Language Models on Preemptible Instances</li>
-</ul>
-<h3 id="Memory-Cache-Management"><a href="#Memory-Cache-Management" class="headerlink" title="Memory &amp; Cache Management"></a>Memory &amp; Cache Management</h3><ul>
-<li><input disabled="" type="checkbox"> <strong>NSDI ‘24</strong> Approximate Caching for Efficiently Serving Text-to-Image Diffusion Models</li>
-<li><input disabled="" type="checkbox"> <strong>ATC ‘24</strong> Cost-Efficient Large Language Model Serving for Multi-turn Conversations with CachedAttention</li>
-<li><input disabled="" type="checkbox"> <strong>SOSP ‘23</strong> Efficient Memory Management for Large Language Model Serving with PagedAttention</li>
-<li><input disabled="" type="checkbox"> <strong>SIGCOMM ‘24</strong> CacheGen: KV Cache Compression and Streaming for Fast Large Language Model Serving</li>
-</ul>
-<h2 id="Infrastructure"><a href="#Infrastructure" class="headerlink" title="Infrastructure"></a>Infrastructure</h2><h3 id="Networking"><a href="#Networking" class="headerlink" title="Networking"></a>Networking</h3><ul>
-<li><input disabled="" type="checkbox"> <strong>SIGCOMM ‘24</strong> NetLLM: Adapting Large Language Models for Networking</li>
-<li><input disabled="" type="checkbox"> <strong>SIGCOMM ‘24</strong> Alibaba HPN: A Data Center Network for Large Language Model Training</li>
-</ul>
-<h3 id="Cloud-Serverless"><a href="#Cloud-Serverless" class="headerlink" title="Cloud &amp; Serverless"></a>Cloud &amp; Serverless</h3><ul>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> RainbowCake: Mitigating Cold-starts in Serverless with Layer-wise Container Caching and Sharing</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘23</strong> AQUATOPE: QoS-and-Uncertainty-Aware Resource Management for Multi-stage Serverless Workflows</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> AUDIBLE: A Convolution-Based Resource Allocator for Oversubscribing Burstable Virtual Machines</li>
-</ul>
-<h3 id="System-Tools-Analysis"><a href="#System-Tools-Analysis" class="headerlink" title="System Tools &amp; Analysis"></a>System Tools &amp; Analysis</h3><ul>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> Thesios: Synthesizing Accurate Counterfactual I&#x2F;O Traces from I&#x2F;O Samples</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> A Journey of a 1,000 Kernels Begins with a Single Step: A Retrospective of Deep Learning on GPUs</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> DREAM: A Dynamic Scheduler for Dynamic Real-time Multi-model ML Workloads</li>
-<li><input disabled="" type="checkbox"> <strong>ASPLOS ‘24</strong> NDPipe: Exploiting Near-data Processing for Scalable Inference and Continuous Training in Photo Storage</li>
-</ul>
-<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://www.usenix.org/conference/nsdi23/fall-accepted-papers">NSDI ‘23 Fall</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.usenix.org/conference/nsdi23/spring-accepted-papers">NSDI ‘23 Spring</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.usenix.org/conference/nsdi24/technical-sessions">NSDI ‘24 Technical Sessions</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.usenix.org/conference/osdi24/technical-sessions">OSDI ‘24</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.usenix.org/conference/atc24/technical-sessions">ATC ‘24</a></li>
-<li><a target="_blank" rel="noopener" href="https://sosp2023.mpi-sws.org/accepted.html">SOSP ‘23</a></li>
-<li><a target="_blank" rel="noopener" href="https://conferences.sigcomm.org/sigcomm/2024/accepted-papers/">SIGCOMM ‘24</a></li>
-<li><a target="_blank" rel="noopener" href="https://conferences.sigcomm.org/sigcomm/2023/list-accepted.html">SIGCCOMM ‘23</a></li>
-<li><a target="_blank" rel="noopener" href="https://asplos-conference.org/asplos2023/index.html%3Fp=3602.html">ASPLOS ‘23</a> </li>
-<li><a target="_blank" rel="noopener" href="https://www.asplos-conference.org/asplos2024/main-program/index.html">ASPLOS ‘24</a></li>
-</ul>
-
+          <p>AI 系统方向论文阅读清单，覆盖训练、推理、调度、通信和资源管理等主题。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/08/20/ai-system-review/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1300,7 +447,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-06-30 13:12:52" itemprop="dateModified" datetime="2026-06-30T13:12:52+00:00">2026-06-30</time>
+      <time title="Modified: 2026-06-30 14:19:01" itemprop="dateModified" datetime="2026-06-30T14:19:01+00:00">2026-06-30</time>
     </span>
 
   
@@ -1383,7 +530,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2026-06-30 13:12:52" itemprop="dateModified" datetime="2026-06-30T13:12:52+00:00">2026-06-30</time>
+      <time title="Modified: 2026-06-30 14:19:01" itemprop="dateModified" datetime="2026-06-30T14:19:01+00:00">2026-06-30</time>
     </span>
 
   
@@ -1396,17 +543,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h3 id="bash设置HTTP-Proxy"><a href="#bash设置HTTP-Proxy" class="headerlink" title="bash设置HTTP Proxy"></a>bash设置HTTP Proxy</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> http_proxy=http://user:password@proxy.server:port/;</span><br><span class="line"><span class="built_in">export</span> https_proxy=http://user:password@proxy.server:port/;</span><br><span class="line"><span class="built_in">export</span> no_proxy=localhost,127.0.0.1,.example.com</span><br></pre></td></tr></table></figure>
-
-<h3 id="APT设置HTTP-Proxy"><a href="#APT设置HTTP-Proxy" class="headerlink" title="APT设置HTTP Proxy"></a>APT设置HTTP Proxy</h3><p>创建文件<code>/etc/apt/apt.conf.d/proxy.conf</code>并添加如下配置</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Acquire::http::Proxy <span class="string">&quot;http://user:password@proxy.server:port/&quot;</span>;</span><br><span class="line">Acquire::https::Proxy <span class="string">&quot;http://user:password@proxy.server:port/&quot;</span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Snap设置HTTP-Proxy"><a href="#Snap设置HTTP-Proxy" class="headerlink" title="Snap设置HTTP Proxy"></a>Snap设置HTTP Proxy</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo snap <span class="built_in">set</span> system proxy.http=<span class="string">&quot;http://user:password@proxy.server:port&quot;</span></span><br><span class="line">sudo snap <span class="built_in">set</span> system proxy.https=<span class="string">&quot;http://user:password@proxy.server:port&quot;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="Docker-Proxy"><a href="#Docker-Proxy" class="headerlink" title="Docker Proxy"></a>Docker Proxy</h2><p>For <code>docker pull</code>, set proxy with <code>dockerd</code></p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">mkdir</span> -p /etc/systemd/system/docker.service.d</span><br><span class="line">sudo vim /etc/systemd/system/docker.service.d/proxy.conf</span><br></pre></td></tr></table></figure>
-<p>Add following content</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[Service]</span><br><span class="line">Environment=<span class="string">&quot;HTTP_PROXY=http://proxy.example.com:8080/&quot;</span> Environment=<span class="string">&quot;HTTPS_PROXY=http://proxy.example.com:8080/&quot;</span> Environment=<span class="string">&quot;NO_PROXY=localhost,127.0.0.1,.example.com&quot;</span></span><br></pre></td></tr></table></figure>
+          <p>常用 Linux、macOS、Docker、APT 和 Snap 代理配置记录。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/05/01/Proxy%20Setting/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
