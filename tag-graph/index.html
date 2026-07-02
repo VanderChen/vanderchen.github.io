@@ -19,12 +19,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"vanderchen.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.28.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content=".tag-graph-page {   --tg-border: #d8dde6;   --tg-panel: #ffffff;   --tg-muted: #657184;   --tg-text: #1f2933;   --tg-accent: #256f8f;   --tg-accent-2: #9a5b13;   --tg-accent-3: #5b6f2a;   color: var">
+    <meta name="description" content="Explore relationships between blog tags and related posts.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Tag Graph">
 <meta property="og:url" content="http://vanderchen.github.io/tag-graph/index.html">
 <meta property="og:site_name" content="Vander&#39;s Blog">
-<meta property="og:description" content=".tag-graph-page {   --tg-border: #d8dde6;   --tg-panel: #ffffff;   --tg-muted: #657184;   --tg-text: #1f2933;   --tg-accent: #256f8f;   --tg-accent-2: #9a5b13;   --tg-accent-3: #5b6f2a;   color: var">
+<meta property="og:description" content="Explore relationships between blog tags and related posts.">
 <meta property="og:locale" content="en_US">
 <meta property="article:author" content="Vander Chen">
 <meta name="twitter:card" content="summary">
@@ -113,7 +113,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+    <div class="sidebar-inner sidebar-overview-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           Table of Contents
@@ -126,7 +126,6 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#tag-graph-heading"><span class="nav-number">1.</span> <span class="nav-text">Tag Graph</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -182,6 +181,7 @@
 </h1>
 
 <div class="post-meta-container">
+    <div class="post-description">Explore relationships between blog tags and related posts.</div>
 </div>
 
 </header>
@@ -202,20 +202,18 @@
   --tg-accent-3: #5b6f2a;
   color: var(--tg-text);
 }
-.tag-graph-header {
-  display: grid;
-  gap: 12px;
-  margin-bottom: 18px;
+.sidebar-nav-toc,
+.post-toc-wrap {
+  display: none !important;
 }
-.tag-graph-title {
-  margin: 0;
-  font-size: 1.55rem;
-  line-height: 1.25;
+.sidebar-nav-overview {
+  width: 100%;
 }
 .tag-graph-summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
+  margin-bottom: 18px;
 }
 .tag-graph-stat {
   border: 1px solid var(--tg-border);
@@ -387,14 +385,11 @@
 </style>
 
 <div class="tag-graph-page" id="tag-graph-page">
-  <section class="tag-graph-header" aria-labelledby="tag-graph-heading">
-    <h1 class="tag-graph-title" id="tag-graph-heading">Tag Graph</h1>
-    <div class="tag-graph-summary" aria-label="Tag graph summary">
-      <div class="tag-graph-stat"><strong>5</strong><span>Tags</span></div>
-      <div class="tag-graph-stat"><strong>2</strong><span>Connections</span></div>
-      <div class="tag-graph-stat"><strong>5</strong><span>Posts</span></div>
-    </div>
-  </section>
+  <div class="tag-graph-summary" aria-label="Tag graph summary">
+    <div class="tag-graph-stat"><strong>5</strong><span>Tags</span></div>
+    <div class="tag-graph-stat"><strong>2</strong><span>Connections</span></div>
+    <div class="tag-graph-stat"><strong>5</strong><span>Posts</span></div>
+  </div>
 
   <section class="tag-graph-shell">
     <div class="tag-graph-board">
@@ -415,7 +410,7 @@
   </section>
 </div>
 
-<script type="application/json" id="tag-graph-data">{"generatedAt":"2026-07-02T03:24:47.449Z","nodes":[{"id":"Inference EcoSystem","label":"Inference EcoSystem","url":"/tags/Inference-EcoSystem/","count":2,"posts":[{"title":"llm-d 与 NVIDIA Dynamo 可靠性能力对照分析","url":"/2026/07/02/inference-robot/","date":"2026-07-02"},{"title":"llm-d 与 NVIDIA Dynamo 性能能力对照总表","url":"/2026/07/02/inference-profiling/","date":"2026-07-02"}]},{"id":"Paper-Reading","label":"Paper-Reading","url":"/tags/Paper-Reading/","count":2,"posts":[{"title":"Paper List for AI System","url":"/2024/08/20/ai-system-review/","date":"2024-08-20"},{"title":"(Paper Reading) Lifting the veil on Meta’s microservice architecture - analyses of topology and request workflows","url":"/2023/09/03/meta-microservice-analysis/","date":"2023-09-03"}]},{"id":"Linux","label":"Linux","url":"/tags/Linux/","count":1,"posts":[{"title":"Ubuntu相关设置Tips","url":"/2020/05/01/Proxy%20Setting/","date":"2020-05-01"}]},{"id":"MacOS","label":"MacOS","url":"/tags/MacOS/","count":1,"posts":[{"title":"Ubuntu相关设置Tips","url":"/2020/05/01/Proxy%20Setting/","date":"2020-05-01"}]},{"id":"Meta","label":"Meta","url":"/tags/Meta/","count":1,"posts":[{"title":"(Paper Reading) Lifting the veil on Meta’s microservice architecture - analyses of topology and request workflows","url":"/2023/09/03/meta-microservice-analysis/","date":"2023-09-03"}]}],"edges":[{"source":"Linux","target":"MacOS","weight":1,"posts":[{"title":"Ubuntu相关设置Tips","url":"/2020/05/01/Proxy%20Setting/","date":"2020-05-01"}]},{"source":"Paper-Reading","target":"Meta","weight":1,"posts":[{"title":"(Paper Reading) Lifting the veil on Meta’s microservice architecture - analyses of topology and request workflows","url":"/2023/09/03/meta-microservice-analysis/","date":"2023-09-03"}]}],"posts":[{"title":"Ubuntu相关设置Tips","url":"/2020/05/01/Proxy%20Setting/","date":"2020-05-01","tags":["Linux","MacOS"]},{"title":"Paper List for AI System","url":"/2024/08/20/ai-system-review/","date":"2024-08-20","tags":["Paper-Reading"]},{"title":"llm-d 与 NVIDIA Dynamo 可靠性能力对照分析","url":"/2026/07/02/inference-robot/","date":"2026-07-02","tags":["Inference EcoSystem"]},{"title":"llm-d 与 NVIDIA Dynamo 性能能力对照总表","url":"/2026/07/02/inference-profiling/","date":"2026-07-02","tags":["Inference EcoSystem"]},{"title":"(Paper Reading) Lifting the veil on Meta’s microservice architecture - analyses of topology and request workflows","url":"/2023/09/03/meta-microservice-analysis/","date":"2023-09-03","tags":["Paper-Reading","Meta"]}]}</script>
+<script type="application/json" id="tag-graph-data">{"generatedAt":"2026-07-02T03:36:06.117Z","nodes":[{"id":"Inference EcoSystem","label":"Inference EcoSystem","url":"/tags/Inference-EcoSystem/","count":2,"posts":[{"title":"llm-d 与 NVIDIA Dynamo 可靠性能力对照分析","url":"/2026/07/02/inference-robot/","date":"2026-07-02"},{"title":"llm-d 与 NVIDIA Dynamo 性能能力对照总表","url":"/2026/07/02/inference-profiling/","date":"2026-07-02"}]},{"id":"Paper-Reading","label":"Paper-Reading","url":"/tags/Paper-Reading/","count":2,"posts":[{"title":"Paper List for AI System","url":"/2024/08/20/ai-system-review/","date":"2024-08-20"},{"title":"(Paper Reading) Lifting the veil on Meta’s microservice architecture - analyses of topology and request workflows","url":"/2023/09/03/meta-microservice-analysis/","date":"2023-09-03"}]},{"id":"Linux","label":"Linux","url":"/tags/Linux/","count":1,"posts":[{"title":"Ubuntu相关设置Tips","url":"/2020/05/01/Proxy%20Setting/","date":"2020-05-01"}]},{"id":"MacOS","label":"MacOS","url":"/tags/MacOS/","count":1,"posts":[{"title":"Ubuntu相关设置Tips","url":"/2020/05/01/Proxy%20Setting/","date":"2020-05-01"}]},{"id":"Meta","label":"Meta","url":"/tags/Meta/","count":1,"posts":[{"title":"(Paper Reading) Lifting the veil on Meta’s microservice architecture - analyses of topology and request workflows","url":"/2023/09/03/meta-microservice-analysis/","date":"2023-09-03"}]}],"edges":[{"source":"Linux","target":"MacOS","weight":1,"posts":[{"title":"Ubuntu相关设置Tips","url":"/2020/05/01/Proxy%20Setting/","date":"2020-05-01"}]},{"source":"Paper-Reading","target":"Meta","weight":1,"posts":[{"title":"(Paper Reading) Lifting the veil on Meta’s microservice architecture - analyses of topology and request workflows","url":"/2023/09/03/meta-microservice-analysis/","date":"2023-09-03"}]}],"posts":[{"title":"Paper List for AI System","url":"/2024/08/20/ai-system-review/","date":"2024-08-20","tags":["Paper-Reading"]},{"title":"Ubuntu相关设置Tips","url":"/2020/05/01/Proxy%20Setting/","date":"2020-05-01","tags":["Linux","MacOS"]},{"title":"llm-d 与 NVIDIA Dynamo 可靠性能力对照分析","url":"/2026/07/02/inference-robot/","date":"2026-07-02","tags":["Inference EcoSystem"]},{"title":"(Paper Reading) Lifting the veil on Meta’s microservice architecture - analyses of topology and request workflows","url":"/2023/09/03/meta-microservice-analysis/","date":"2023-09-03","tags":["Paper-Reading","Meta"]},{"title":"llm-d 与 NVIDIA Dynamo 性能能力对照总表","url":"/2026/07/02/inference-profiling/","date":"2026-07-02","tags":["Inference EcoSystem"]}]}</script>
 <script>
 (function() {
   const graph = JSON.parse(document.getElementById('tag-graph-data').textContent);
