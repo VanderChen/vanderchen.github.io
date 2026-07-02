@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"vanderchen.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.28.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content=".tag-graph-page {   --tg-border: #d8dde6;   --tg-panel: #ffffff;   --tg-muted: #657184;   --tg-text: #1f2933;   --tg-accent: #256f8f;   --tg-accent-2: #9a5b13;   --tg-accent-3: #5b6f2a;   color: var">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tag Graph">
+<meta property="og:url" content="http://vanderchen.github.io/tag-graph/index.html">
+<meta property="og:site_name" content="Vander&#39;s Blog">
+<meta property="og:description" content=".tag-graph-page {   --tg-border: #d8dde6;   --tg-panel: #ffffff;   --tg-muted: #657184;   --tg-text: #1f2933;   --tg-accent: #256f8f;   --tg-accent-2: #9a5b13;   --tg-accent-3: #5b6f2a;   color: var">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="Vander Chen">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://vanderchen.github.io/tag-graph/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"en","comments":"","permalink":"","path":"tag-graph/index.html","title":"Tag Graph"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Tag Graph | Vander's Blog
+</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Vander's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tag-graph"><a href="/tag-graph/" rel="section"><i class="fa fa-project-diagram fa-fw"></i>Tag Graph</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">5</span></a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>Sitemap</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#tag-graph-heading"><span class="nav-number">1.</span> <span class="nav-text">Tag Graph</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vander Chen"
+      src="https://github.com/VanderChen/picbed/raw/main/blog/profile.png">
+  <p class="site-author-name" itemprop="name">Vander Chen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/vanderchen" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;vanderchen" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:vanderchen@outlook.com" title="E-Mail → mailto:vanderchen@outlook.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner page posts-expand">
+
+
+    
+    
+    
+    <div class="post-block" lang="en"><header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">Tag Graph
+</h1>
+
+<div class="post-meta-container">
+</div>
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+          
+<style>
+.tag-graph-page {
+  --tg-border: #d8dde6;
+  --tg-panel: #ffffff;
+  --tg-muted: #657184;
+  --tg-text: #1f2933;
+  --tg-accent: #256f8f;
+  --tg-accent-2: #9a5b13;
+  --tg-accent-3: #5b6f2a;
+  color: var(--tg-text);
+}
+.tag-graph-header {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.tag-graph-title {
+  margin: 0;
+  font-size: 1.55rem;
+  line-height: 1.25;
+}
+.tag-graph-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.tag-graph-stat {
+  border: 1px solid var(--tg-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--tg-panel);
+}
+.tag-graph-stat strong {
+  display: block;
+  font-size: 1.25rem;
+}
+.tag-graph-stat span {
+  color: var(--tg-muted);
+  font-size: .86rem;
+}
+.tag-graph-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 14px;
+  align-items: stretch;
+}
+.tag-graph-board,
+.tag-graph-side {
+  border: 1px solid var(--tg-border);
+  border-radius: 8px;
+  background: var(--tg-panel);
+}
+.tag-graph-toolbar {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(160px, 240px) auto;
+  gap: 10px;
+  padding: 12px;
+  border-bottom: 1px solid var(--tg-border);
+}
+.tag-graph-input,
+.tag-graph-select,
+.tag-graph-button {
+  min-height: 36px;
+  border: 1px solid var(--tg-border);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--tg-text);
+  font: inherit;
+}
+.tag-graph-input,
+.tag-graph-select {
+  width: 100%;
+  padding: 0 10px;
+}
+.tag-graph-button {
+  padding: 0 12px;
+  cursor: pointer;
+}
+.tag-graph-stage {
+  position: relative;
+  min-height: 520px;
+}
+.tag-graph-svg {
+  display: block;
+  width: 100%;
+  height: 520px;
+}
+.tag-graph-empty {
+  position: absolute;
+  inset: 0;
+  display: none;
+  place-items: center;
+  color: var(--tg-muted);
+}
+.tag-graph-side {
+  padding: 14px;
+  min-height: 520px;
+  overflow: auto;
+}
+.tag-graph-side h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+.tag-graph-side p {
+  margin: 0 0 10px;
+  color: var(--tg-muted);
+  line-height: 1.55;
+}
+.tag-graph-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 12px;
+}
+.tag-graph-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--tg-border);
+  border-radius: 999px;
+  padding: 3px 8px;
+  color: var(--tg-text);
+  text-decoration: none;
+  font-size: .82rem;
+}
+.tag-graph-posts {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+.tag-graph-post {
+  border-top: 1px solid var(--tg-border);
+  padding-top: 8px;
+}
+.tag-graph-post a {
+  color: var(--tg-accent);
+  text-decoration: none;
+}
+.tag-graph-post time {
+  display: block;
+  color: var(--tg-muted);
+  font-size: .78rem;
+  margin-top: 2px;
+}
+.tag-graph-node {
+  cursor: pointer;
+}
+.tag-graph-node circle {
+  fill: #f7fbfc;
+  stroke: var(--tg-accent);
+  stroke-width: 2;
+}
+.tag-graph-node.is-selected circle {
+  fill: #fff6e7;
+  stroke: var(--tg-accent-2);
+  stroke-width: 3;
+}
+.tag-graph-node.is-muted {
+  opacity: .28;
+}
+.tag-graph-node text {
+  fill: var(--tg-text);
+  font-size: 12px;
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.tag-graph-link {
+  stroke: #9aa6b2;
+  stroke-linecap: round;
+}
+.tag-graph-link.is-selected {
+  stroke: var(--tg-accent-2);
+}
+.tag-graph-link.is-muted {
+  opacity: .16;
+}
+@media (max-width: 860px) {
+  .tag-graph-summary,
+  .tag-graph-shell,
+  .tag-graph-toolbar {
+    grid-template-columns: 1fr;
+  }
+  .tag-graph-stage,
+  .tag-graph-side {
+    min-height: 420px;
+  }
+  .tag-graph-svg {
+    height: 420px;
+  }
+}
+</style>
+
+<div class="tag-graph-page" id="tag-graph-page">
+  <section class="tag-graph-header" aria-labelledby="tag-graph-heading">
+    <h1 class="tag-graph-title" id="tag-graph-heading">Tag Graph</h1>
+    <div class="tag-graph-summary" aria-label="Tag graph summary">
+      <div class="tag-graph-stat"><strong>5</strong><span>Tags</span></div>
+      <div class="tag-graph-stat"><strong>2</strong><span>Connections</span></div>
+      <div class="tag-graph-stat"><strong>5</strong><span>Posts</span></div>
+    </div>
+  </section>
+
+  <section class="tag-graph-shell">
+    <div class="tag-graph-board">
+      <div class="tag-graph-toolbar">
+        <input class="tag-graph-input" id="tag-graph-search" type="search" placeholder="Search tags or posts" aria-label="Search tags or posts">
+        <select class="tag-graph-select" id="tag-graph-weight" aria-label="Minimum connection strength">
+          <option value="1">Minimum connection 1</option>
+        </select>
+        <button class="tag-graph-button" id="tag-graph-reset" type="button">Reset</button>
+      </div>
+      <div class="tag-graph-stage">
+        <svg class="tag-graph-svg" id="tag-graph-svg" role="img" aria-label="Interactive graph of blog tags"></svg>
+        <div class="tag-graph-empty" id="tag-graph-empty">No matching tags</div>
+      </div>
+    </div>
+
+    <aside class="tag-graph-side" id="tag-graph-details" aria-live="polite"></aside>
+  </section>
+</div>
+
+<script type="application/json" id="tag-graph-data">{"generatedAt":"2026-07-02T03:24:47.449Z","nodes":[{"id":"Inference EcoSystem","label":"Inference EcoSystem","url":"/tags/Inference-EcoSystem/","count":2,"posts":[{"title":"llm-d 与 NVIDIA Dynamo 可靠性能力对照分析","url":"/2026/07/02/inference-robot/","date":"2026-07-02"},{"title":"llm-d 与 NVIDIA Dynamo 性能能力对照总表","url":"/2026/07/02/inference-profiling/","date":"2026-07-02"}]},{"id":"Paper-Reading","label":"Paper-Reading","url":"/tags/Paper-Reading/","count":2,"posts":[{"title":"Paper List for AI System","url":"/2024/08/20/ai-system-review/","date":"2024-08-20"},{"title":"(Paper Reading) Lifting the veil on Meta’s microservice architecture - analyses of topology and request workflows","url":"/2023/09/03/meta-microservice-analysis/","date":"2023-09-03"}]},{"id":"Linux","label":"Linux","url":"/tags/Linux/","count":1,"posts":[{"title":"Ubuntu相关设置Tips","url":"/2020/05/01/Proxy%20Setting/","date":"2020-05-01"}]},{"id":"MacOS","label":"MacOS","url":"/tags/MacOS/","count":1,"posts":[{"title":"Ubuntu相关设置Tips","url":"/2020/05/01/Proxy%20Setting/","date":"2020-05-01"}]},{"id":"Meta","label":"Meta","url":"/tags/Meta/","count":1,"posts":[{"title":"(Paper Reading) Lifting the veil on Meta’s microservice architecture - analyses of topology and request workflows","url":"/2023/09/03/meta-microservice-analysis/","date":"2023-09-03"}]}],"edges":[{"source":"Linux","target":"MacOS","weight":1,"posts":[{"title":"Ubuntu相关设置Tips","url":"/2020/05/01/Proxy%20Setting/","date":"2020-05-01"}]},{"source":"Paper-Reading","target":"Meta","weight":1,"posts":[{"title":"(Paper Reading) Lifting the veil on Meta’s microservice architecture - analyses of topology and request workflows","url":"/2023/09/03/meta-microservice-analysis/","date":"2023-09-03"}]}],"posts":[{"title":"Ubuntu相关设置Tips","url":"/2020/05/01/Proxy%20Setting/","date":"2020-05-01","tags":["Linux","MacOS"]},{"title":"Paper List for AI System","url":"/2024/08/20/ai-system-review/","date":"2024-08-20","tags":["Paper-Reading"]},{"title":"llm-d 与 NVIDIA Dynamo 可靠性能力对照分析","url":"/2026/07/02/inference-robot/","date":"2026-07-02","tags":["Inference EcoSystem"]},{"title":"llm-d 与 NVIDIA Dynamo 性能能力对照总表","url":"/2026/07/02/inference-profiling/","date":"2026-07-02","tags":["Inference EcoSystem"]},{"title":"(Paper Reading) Lifting the veil on Meta’s microservice architecture - analyses of topology and request workflows","url":"/2023/09/03/meta-microservice-analysis/","date":"2023-09-03","tags":["Paper-Reading","Meta"]}]}</script>
+<script>
+(function() {
+  const graph = JSON.parse(document.getElementById('tag-graph-data').textContent);
+  const svg = document.getElementById('tag-graph-svg');
+  const details = document.getElementById('tag-graph-details');
+  const search = document.getElementById('tag-graph-search');
+  const weight = document.getElementById('tag-graph-weight');
+  const reset = document.getElementById('tag-graph-reset');
+  const empty = document.getElementById('tag-graph-empty');
+  const ns = 'http://www.w3.org/2000/svg';
+  let selected = null;
+  let visibleNodes = [];
+  let visibleEdges = [];
+  let animationFrame = null;
+
+  function html(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function createSvg(tag, attrs) {
+    const element = document.createElementNS(ns, tag);
+    Object.keys(attrs || {}).forEach(key => element.setAttribute(key, attrs[key]));
+    return element;
+  }
+
+  function radius(node) {
+    return 14 + Math.sqrt(node.count) * 7;
+  }
+
+  function matchesQuery(node, query) {
+    if (!query) return true;
+    const text = [
+      node.label,
+      node.posts.map(post => post.title).join(' ')
+    ].join(' ').toLowerCase();
+    return text.includes(query);
+  }
+
+  function relatedTagIds(id) {
+    const related = new Set([id]);
+    graph.edges.forEach(edge => {
+      if (edge.source === id) related.add(edge.target);
+      if (edge.target === id) related.add(edge.source);
+    });
+    return related;
+  }
+
+  function renderDetails(node) {
+    if (!node) {
+      const topTags = graph.nodes.slice(0, 12).map(tag => (
+        '<a class="tag-graph-chip" href="' + html(tag.url) + '">' + html(tag.label) + '<span>' + tag.count + '</span></a>'
+      )).join('');
+      details.innerHTML =
+        '<h3>Overview</h3>' +
+        '<p>Select a tag to inspect related posts and direct tag connections.</p>' +
+        '<div class="tag-graph-chip-row">' + topTags + '</div>';
+      return;
+    }
+
+    const directEdges = graph.edges.filter(edge => edge.source === node.id || edge.target === node.id);
+    const related = directEdges
+      .sort((a, b) => b.weight - a.weight)
+      .map(edge => {
+        const other = edge.source === node.id ? edge.target : edge.source;
+        return '<span class="tag-graph-chip">' + html(other) + '<span>' + edge.weight + '</span></span>';
+      })
+      .join('');
+    const posts = node.posts.map(post => (
+      '<article class="tag-graph-post"><a href="' + html(post.url) + '">' + html(post.title) + '</a>' +
+      (post.date ? '<time datetime="' + html(post.date) + '">' + html(post.date) + '</time>' : '') + '</article>'
+    )).join('');
+
+    details.innerHTML =
+      '<h3>' + html(node.label) + '</h3>' +
+      '<p>' + node.count + ' post' + (node.count > 1 ? 's' : '') + '</p>' +
+      '<a class="tag-graph-chip" href="' + html(node.url) + '">Open tag page</a>' +
+      (related ? '<div class="tag-graph-chip-row">' + related + '</div>' : '<p>No direct tag connections yet.</p>') +
+      '<div class="tag-graph-posts">' + posts + '</div>';
+  }
+
+  function layout(width, height) {
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const count = Math.max(visibleNodes.length, 1);
+    const orbit = Math.max(90, Math.min(width, height) * 0.34);
+
+    visibleNodes.forEach((node, index) => {
+      if (typeof node.x !== 'number' || typeof node.y !== 'number') {
+        const angle = (Math.PI * 2 * index) / count;
+        node.x = centerX + Math.cos(angle) * orbit;
+        node.y = centerY + Math.sin(angle) * orbit;
+        node.vx = 0;
+        node.vy = 0;
+      }
+    });
+
+    for (let tick = 0; tick < 180; tick++) {
+      for (let i = 0; i < visibleNodes.length; i++) {
+        for (let j = i + 1; j < visibleNodes.length; j++) {
+          const a = visibleNodes[i];
+          const b = visibleNodes[j];
+          const dx = b.x - a.x || 0.01;
+          const dy = b.y - a.y || 0.01;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const push = Math.min(7, 1200 / (distance * distance));
+          const nx = dx / distance;
+          const ny = dy / distance;
+          a.vx -= nx * push;
+          a.vy -= ny * push;
+          b.vx += nx * push;
+          b.vy += ny * push;
+        }
+      }
+
+      visibleEdges.forEach(edge => {
+        const source = visibleNodes.find(node => node.id === edge.source);
+        const target = visibleNodes.find(node => node.id === edge.target);
+        if (!source || !target) return;
+        const dx = target.x - source.x;
+        const dy = target.y - source.y;
+        const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+        const desired = 140 - Math.min(edge.weight, 8) * 8;
+        const pull = (distance - desired) * 0.012;
+        const nx = dx / distance;
+        const ny = dy / distance;
+        source.vx += nx * pull;
+        source.vy += ny * pull;
+        target.vx -= nx * pull;
+        target.vy -= ny * pull;
+      });
+
+      visibleNodes.forEach(node => {
+        node.vx += (centerX - node.x) * 0.006;
+        node.vy += (centerY - node.y) * 0.006;
+        node.vx *= 0.82;
+        node.vy *= 0.82;
+        node.x = Math.max(radius(node) + 10, Math.min(width - radius(node) - 10, node.x + node.vx));
+        node.y = Math.max(radius(node) + 18, Math.min(height - radius(node) - 18, node.y + node.vy));
+      });
+    }
+  }
+
+  function draw() {
+    const width = svg.clientWidth || 720;
+    const height = svg.clientHeight || 520;
+    svg.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+    svg.textContent = '';
+
+    if (!visibleNodes.length) {
+      empty.style.display = 'grid';
+      return;
+    }
+
+    empty.style.display = 'none';
+    layout(width, height);
+
+    const selectedRelated = selected ? relatedTagIds(selected.id) : new Set();
+    const edgeLayer = createSvg('g');
+    const nodeLayer = createSvg('g');
+    svg.appendChild(edgeLayer);
+    svg.appendChild(nodeLayer);
+
+    visibleEdges.forEach(edge => {
+      const source = visibleNodes.find(node => node.id === edge.source);
+      const target = visibleNodes.find(node => node.id === edge.target);
+      if (!source || !target) return;
+
+      const line = createSvg('line', {
+        class: 'tag-graph-link' + (selected && (edge.source === selected.id || edge.target === selected.id) ? ' is-selected' : selected ? ' is-muted' : ''),
+        x1: source.x,
+        y1: source.y,
+        x2: target.x,
+        y2: target.y,
+        'stroke-width': 1.2 + Math.sqrt(edge.weight) * 1.8
+      });
+      edgeLayer.appendChild(line);
+    });
+
+    visibleNodes.forEach(node => {
+      const group = createSvg('g', {
+        class: 'tag-graph-node' + (selected && node.id === selected.id ? ' is-selected' : selected && !selectedRelated.has(node.id) ? ' is-muted' : ''),
+        transform: 'translate(' + node.x + ' ' + node.y + ')',
+        tabindex: '0',
+        role: 'button',
+        'aria-label': node.label + ', ' + node.count + ' posts'
+      });
+      const circle = createSvg('circle', { r: radius(node) });
+      const text = createSvg('text', {
+        'text-anchor': 'middle',
+        y: radius(node) + 16
+      });
+      text.textContent = node.label;
+      group.appendChild(circle);
+      group.appendChild(text);
+      group.addEventListener('click', function() {
+        selected = selected && selected.id === node.id ? null : node;
+        renderDetails(selected);
+        scheduleDraw();
+      });
+      group.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          group.dispatchEvent(new MouseEvent('click'));
+        }
+      });
+      nodeLayer.appendChild(group);
+    });
+  }
+
+  function scheduleDraw() {
+    if (animationFrame) cancelAnimationFrame(animationFrame);
+    animationFrame = requestAnimationFrame(draw);
+  }
+
+  function applyFilters() {
+    const query = search.value.trim().toLowerCase();
+    const minWeight = Number(weight.value || 1);
+    const nodeIds = new Set();
+
+    visibleEdges = graph.edges.filter(edge => edge.weight >= minWeight);
+    visibleEdges.forEach(edge => {
+      nodeIds.add(edge.source);
+      nodeIds.add(edge.target);
+    });
+
+    visibleNodes = graph.nodes.filter(node => {
+      const connected = nodeIds.size ? nodeIds.has(node.id) : true;
+      return connected && matchesQuery(node, query);
+    });
+
+    const visibleIdSet = new Set(visibleNodes.map(node => node.id));
+    visibleEdges = visibleEdges.filter(edge => visibleIdSet.has(edge.source) && visibleIdSet.has(edge.target));
+
+    if (selected && !visibleIdSet.has(selected.id)) {
+      selected = null;
+      renderDetails(null);
+    }
+
+    scheduleDraw();
+  }
+
+  search.addEventListener('input', applyFilters);
+  weight.addEventListener('change', applyFilters);
+  reset.addEventListener('click', function() {
+    search.value = '';
+    weight.value = '1';
+    selected = null;
+    renderDetails(null);
+    applyFilters();
+  });
+  window.addEventListener('resize', scheduleDraw);
+
+  renderDetails(null);
+  applyFilters();
+})();
+</script>
+      </div>
+      
+      
+      
+    </div>
+
+    
+    
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Vander Chen</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
